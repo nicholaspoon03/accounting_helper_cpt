@@ -156,44 +156,50 @@ def entry():
             elif n == 'create':
                 name = input('Please enter the name of your company: ')
                 date = input('Please enter the date in the following format (mm/dd/yyyy): ')
+                try:
+                    month = int(date[:2])
+                    day = int(date[3:5])
+                    year = int(date[-4:])
+                except ValueError:
+                    print('Not a valid date. Please re-enter information.')
+                    error = True
+                if error:
+                    continue
                 if len(date) != 10:
                     print('Not a valid date. Please re-enter information.')
                     error = True
-                elif True:
-                    try:
-                        month = int(date[:1])
-                        day = int(date[3:5])
-                        year = int(date[-4:])
-                    except ValueError:
-                        print('Not a valid date. Please re-enter information.')
-                        error = True
-                        continue
                 elif month < 0 or month > 12:
-                    print('Not a valid date. Please re-enter information')
+                    print('Not a valid date. Please re-enter information.')
                     error = True
-                    continue
                 elif year < 0:
-                    print('Not a valid date. Please re-enter information')
+                    print('Not a valid date. Please re-enter information.')
                     error = True
-                    continue
+                elif day < 0:
+                    print('Not a valid date. Please re-enter information.')
+                    error = True
                 else:
-                    month = month_list[int(date:1)-1]
+                    month = month_list[int(date[:2])-1]
                     if month == 'February':
                         if year % 4 == 0:
                             if day > 29:
                                 print('Not a valid date. Please re-enter information')
                                 error = True
-                                continue
                         else:
                             if day > 28:
                                 print('Not a valid date. Please re-enter information')
                                 error = True
-                                continue
-                    if day > month_days[month]:
+                    elif day > month_days[month]:
                         print('Not a valid date. Please re-enter information')
                         error = True
-                        continue
+                if error:
+                    continue
                 f_period = input("Please enter 'year' or 'month' for the fiscal period: ")
+                if f_period == 'year' or f_period == 'month':
+                    pass
+                else:
+                    print('Not a valid input. Please re-enter information.')
+                    error = True
+                    continue
                 entry_complete = True
                 break
             else:
