@@ -1,4 +1,5 @@
 import arcadeplus
+import keyboard
 
 WIDTH = 1000
 HEIGHT = 690
@@ -13,6 +14,14 @@ entry_complete = False
 asset_name = []
 asset_value = []
 asset_cr_dr = []
+
+liability_name = []
+liability_value = []
+liability_cr_dr = []
+
+revenue_name = []
+revenue_value = []
+revenue_cr_dr = []
 
 def setup():
     arcadeplus.open_window(WIDTH, HEIGHT, "Accounting Helper")
@@ -83,7 +92,8 @@ def balance_sheet():
 
 
 def entry():
-    global entry_complete, asset_name, asset_value, asset_cr_dr
+    global entry_complete, asset_name, asset_value, asset_cr_dr, liability_name, liability_value
+    global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr
     home = True
     assets = False
     liabilities = False
@@ -91,11 +101,13 @@ def entry():
     drawings = False
     revenue = False
     expenses = False
-    print("Welcome to Accounting Helper")
-    print("This app allows you to make a chart of accounts, trial balance, income statement, and balance sheet with a\nsimple input of your assets, liabilities, and owner's equity")
-    print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input")
-    print("Press esc to go back to the main menu to enter another type of account.")
-    print("When all input is create, go back to the main menu and type 'create' to start creating your worksheets.")
+    print("Welcome to Accounting Helper\n")
+    print("This app allows you to make a chart of accounts, trial balance, income statement, and balance sheet with a\nsimple input of your assets, liabilities, and owner's equity.\n")
+    print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
+    print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type 'del account name' but replace 'account name' with the account name.")
+    print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only delete assets when you are in the assets menu.\n')
+    print("Press esc to go back to the main menu to enter another type of account.\n")
+    print("When all data is entered, go back to the main menu and type 'create' to start creating your worksheets.\n")
     while True:
         if home:
             n = input('Please enter the type of account that you would like to enter: ')
@@ -114,26 +126,103 @@ def entry():
             elif n == 'revenue':
                 revenue = True
                 home = False
-            elif n == 'expenses'
+            elif n == 'expenses':
                 expenses = True
                 home = False
             elif n == 'create':
                 entry_complete = True
+                break
             else:
                 print('Please enter a valid input')
         elif assets:
-            print('If at any point you make a mistake, ')
-            name = input('Please enter the name of your asset: ')
+            a_name = input('Please enter the name of your asset: ')
+            if 'del' in a_name:
+                delete = a_name.find('l')
+                index = asset_name.index(a_name[delete+2:])
+                asset_name.pop(index)
+                asset_value.pop(index)
+                asset_cr_dr.pop(index)
+            else:
+                try:
+                    a_value = float(input('Please enter the value of your asset: '))
+                except ValueError:
+                    print('Value was invalid. Terminated previously entered asset. Please re-enter.')
+                    continue
+                if a_value < 0:
+                    print('Value was invalid. Terminated previously entered asset. Please re-enter.')
+                a_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                if a_cr_dr == 'dr' or a_cr_dr == 'cr':
+                    pass
+                else:
+                    print('Input was invalid. Terminated previously entered asset. Please re-enter.')
+                    continue
+                asset_name.append(a_name)
+                asset_value.append(a_value)
+                asset_cr_dr.append(a_cr_dr)
         elif liabilities:
-            pass
+            l_name = input('Please enter the name of your liability: ')
+            if 'del' in l_name:
+                delete = l_name.find('l')
+                index = liability_name.index(l_name[delete+2:])
+                liability_name.pop(index)
+                liability_value.pop(index)
+                liability_cr_dr.pop(index)
+            else:
+                try:
+                    l_value = float(input('Please enter the value of your liability: '))
+                except ValueError:
+                    print('Value was invalid. Terminated previously entered liability. Please re-enter.')
+                    continue
+                l_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                if l_cr_dr == 'dr' or l_cr_dr == 'cr':
+                    pass
+                else:
+                    print('Input was invalid. Terminated previously entered liability. Please re-enter.')
+                    continue
+                liability_name.append(l_name)
+                liability_value.append(l_value)
+                liability_cr_dr.append(l_cr_dr)
         elif capital:
             pass
         elif drawings:
             pass
         elif revenue:
-            pass
+            l_name = input('Please enter the name of your liability: ')
+            if 'del' in l_name:
+                delete = l_name.find('l')
+                index = liability_name.index(l_name[delete+2:])
+                liability_name.pop(index)
+                liability_value.pop(index)
+                liability_cr_dr.pop(index)
+            else:
+                try:
+                    l_value = float(input('Please enter the value of your liability: '))
+                except ValueError:
+                    print('Value was invalid. Terminated previously entered liability. Please re-enter.')
+                    continue
+                l_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                if l_cr_dr == 'dr' or l_cr_dr == 'cr':
+                    pass
+                else:
+                    print('Input was invalid. Terminated previously entered liability. Please re-enter.')
+                    continue
+                liability_name.append(l_name)
+                liability_value.append(l_value)
+                liability_cr_dr.append(l_cr_dr)
+            print(liability_name)
+            print(liability_value)
+            print(liability_cr_dr)
         elif expenses:
             pass
+       # if Key.esc:
+            home = True
+            assets = False
+            liabilities = False
+            capital = False
+            drawings = False
+            revenue = False
+            expenses = False
+
 
 if __name__ == '__main__':
     entry()
