@@ -40,11 +40,6 @@ expense_name = []
 expense_value = []
 expense_cr_dr = []
 
-chart_of_accounts_bttn = False
-trial_balance_bttn = False
-income_statement_bttn = False
-balance_sheet_bttn = False
-
 mouse_press = False
 mouse_x = 0
 mouse_y = 0
@@ -97,29 +92,12 @@ def on_mouse_press(x, y, button, modifiers):
     global mouse_press
     if button == arcadeplus.MOUSE_BUTTON_LEFT:
         mouse_press = True
-    # global chart_of_accounts_bttn, trial_balance_bttn
-    # global income_statement_bttn, balance_sheet_bttn
-    # if home_page:
-    #     if 400 <= x <= 600 and 380 <= y <= 420:
-    #         chart_of_accounts_bttn = True
-    #     elif 400 <= x <= 600 and 330 <= y <= 370:
-    #         trial_balance_bttn = True
-    #     elif 400 <= x <= 600 and 280 <= y <= 320:
-    #         income_statement_bttn = True
-    #     elif 400 <= x <= 600 and 230 <= y <= 270:
-    #         balance_sheet_bttn = True
 
 
 def on_mouse_release(x, y, button, modifiers):
     global mouse_press
     if button == arcadeplus.MOUSE_BUTTON_LEFT:
         mouse_press = False
-    # global chart_of_accounts_bttn, trial_balance_bttn
-    # global income_statement_bttn, balance_sheet_bttn
-    # chart_of_accounts_bttn = False
-    # trial_balance_bttn = False
-    # income_statement_bttn = False
-    # balance_sheet_bttn = False
 
 
 def on_mouse_motion(x, y, dx, dy):
@@ -130,18 +108,21 @@ def on_mouse_motion(x, y, dx, dy):
 
 def home_page():
     arcadeplus.draw_text('Accounting Helper', 340, 530, arcadeplus.color.BLUE_VIOLET, 35, font_name='calibri')
-    button_looks(WIDTH/2, 400, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    chart_of_accounts_bttn(WIDTH/2, 400, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    trial_balance_bttn(WIDTH/2, 350, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    income_statement_bttn(WIDTH/2, 300, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    balance_sheet_bttn(WIDTH/2, 250, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
     # arcadeplus.draw_rectangle_filled(WIDTH/2, 400, 200, 40, arcadeplus.color.LIME_GREEN)
     # arcadeplus.draw_rectangle_filled(WIDTH/2, 350, 200, 40, arcadeplus.color.LIME_GREEN)
     # arcadeplus.draw_rectangle_filled(WIDTH/2, 300, 200, 40, arcadeplus.color.LIME_GREEN)
     # arcadeplus.draw_rectangle_filled(WIDTH/2, 250, 200, 40, arcadeplus.color.LIME_GREEN)
-    # arcadeplus.draw_text('Chart of Accounts', 430, 388, arcadeplus.color.BLACK, 16, font_name='calibri')
-    # arcadeplus.draw_text('Trial Balance', 450, 338, arcadeplus.color.BLACK, 16, font_name='calibri')
-    # arcadeplus.draw_text('Income Statement', 428, 288, arcadeplus.color.BLACK, 16, font_name='calibri')
-    # arcadeplus.draw_text('Balance Sheet', 445, 238, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text('Chart of Accounts', 430, 388, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text('Trial Balance', 450, 338, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text('Income Statement', 428, 288, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text('Balance Sheet', 445, 238, arcadeplus.color.BLACK, 16, font_name='calibri')
 
 
-def button_looks(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+def chart_of_accounts_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
     left = centre_x - width/2
     right = centre_x + width/2
     top = centre_x + height/2
@@ -152,6 +133,46 @@ def button_looks(centre_x, centre_y, width, height, color_press, color_hover, co
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+
+
+def trial_balance_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    left = centre_x - width/2
+    right = centre_x + width/2
+    top = centre_x + height/2
+    bottom = centre_x - width/2
+    if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+    elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+    else:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+
+
+def income_statement_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    left = centre_x - width/2
+    right = centre_x + width/2
+    top = centre_x + height/2
+    bottom = centre_x - width/2
+    if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+    elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+    else:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+
+
+def balance_sheet_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    left = centre_x - width/2
+    right = centre_x + width/2
+    top = centre_x + height/2
+    bottom = centre_x - width/2
+    if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+    elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+    else:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+
 
 def chart_of_accounts():
     pass
