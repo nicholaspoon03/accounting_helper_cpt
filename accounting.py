@@ -11,6 +11,12 @@ balance_sheet = False
 income_statement = False
 entry_complete = False
 
+home_page_press = False
+chart_of_accounts_press = False
+trial_balance_press = False
+balance_sheet_press = False
+income_statement_press = False
+
 month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31, 'June': 30, 'July': 31, 'August': 31, 'September': 30, 'October': 31, 'November': 30, 'December': 31}
 #month_days = {31: ['January', 'March', 'May', 'July', 'August', 'October', 'December'], 30: {'April', 'June', 'September', 'November'}}
 month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -71,7 +77,7 @@ def on_draw():
     if home_page:
         home_page()
     elif chart_of_accounts:
-        pass
+        chart_of_accounts()
     elif trial_balance:
         pass
     elif income_statement:
@@ -112,10 +118,6 @@ def home_page():
     trial_balance_bttn(WIDTH/2, 350, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
     income_statement_bttn(WIDTH/2, 300, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
     balance_sheet_bttn(WIDTH/2, 250, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
-    # arcadeplus.draw_rectangle_filled(WIDTH/2, 400, 200, 40, arcadeplus.color.LIME_GREEN)
-    # arcadeplus.draw_rectangle_filled(WIDTH/2, 350, 200, 40, arcadeplus.color.LIME_GREEN)
-    # arcadeplus.draw_rectangle_filled(WIDTH/2, 300, 200, 40, arcadeplus.color.LIME_GREEN)
-    # arcadeplus.draw_rectangle_filled(WIDTH/2, 250, 200, 40, arcadeplus.color.LIME_GREEN)
     arcadeplus.draw_text('Chart of Accounts', 430, 388, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Trial Balance', 450, 338, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Income Statement', 428, 288, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -123,59 +125,84 @@ def home_page():
 
 
 def chart_of_accounts_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    global chart_of_accounts_press, home_page, chart_of_accounts
     left = centre_x - width/2
     right = centre_x + width/2
     top = centre_y + height/2
     bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+        chart_of_accounts_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+    if chart_of_accounts_press:
+        chart_of_accounts_press = False
+        chart_of_accounts = True
+        home_page = False
 
 
 def trial_balance_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    global trial_balance_press, trial_balance, home_page
     left = centre_x - width/2
     right = centre_x + width/2
     top = centre_y + height/2
     bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+        trial_balance_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+    if trial_balance_press:
+        trial_balance_press = False
+        trial_balance = True
+        home_page = False
 
 
 def income_statement_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    global home_page, income_statement_press, income_statement
     left = centre_x - width/2
     right = centre_x + width/2
     top = centre_y + height/2
     bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+        income_statement_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+    if income_statement_press:
+        income_statement_press = False
+        income_statement = True
+        home_page = False
 
 
 def balance_sheet_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    global balance_sheet_press, home_page, balance_sheet
     left = centre_x - width/2
     right = centre_x + width/2
     top = centre_y + height/2
     bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+        balance_sheet_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+    if balance_sheet_press:
+        balance_sheet_press = False
+        balance_sheet = True
+        home_page = False
 
 
 def chart_of_accounts():
-    pass
+    arcadeplus.set_background_color(arcadeplus.color.WHITE)
+    arcadeplus.draw_rectangle(WIDTH/2, HEIGHT/2, 100, 200, arcadeplus.color.BLACK)
 
 
 def trial_balance():
