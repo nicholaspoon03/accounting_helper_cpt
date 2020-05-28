@@ -23,6 +23,10 @@ revenue_name = []
 revenue_value = []
 revenue_cr_dr = []
 
+expense_name = []
+expense_value = []
+expense_cr_dr = []
+
 def setup():
     arcadeplus.open_window(WIDTH, HEIGHT, "Accounting Helper")
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
@@ -93,7 +97,8 @@ def balance_sheet():
 
 def entry():
     global entry_complete, asset_name, asset_value, asset_cr_dr, liability_name, liability_value
-    global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr
+    global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
+    global expense_cr_dr
     home = True
     assets = False
     liabilities = False
@@ -138,10 +143,17 @@ def entry():
             a_name = input('Please enter the name of your asset: ')
             if 'del' in a_name:
                 delete = a_name.find('l')
-                index = asset_name.index(a_name[delete+2:])
+                try:
+                    index = asset_name.index(a_name[delete+2:])
+                except ValueError:
+                    print('Asset not found. Please re-enter.')
+                    continue
                 asset_name.pop(index)
                 asset_value.pop(index)
                 asset_cr_dr.pop(index)
+            elif a_name == 'back':
+                home = True
+                assets = False
             else:
                 try:
                     a_value = float(input('Please enter the value of your asset: '))
@@ -159,14 +171,22 @@ def entry():
                 asset_name.append(a_name)
                 asset_value.append(a_value)
                 asset_cr_dr.append(a_cr_dr)
+            print(f'Your current assets are {asset_name}')
         elif liabilities:
             l_name = input('Please enter the name of your liability: ')
             if 'del' in l_name:
                 delete = l_name.find('l')
-                index = liability_name.index(l_name[delete+2:])
+                try:
+                    index = liability_name.index(l_name[delete+2:])
+                except ValueError:
+                    print('Liability not found. Please re-enter.')
+                    continue
                 liability_name.pop(index)
                 liability_value.pop(index)
                 liability_cr_dr.pop(index)
+            elif l_name == 'back':
+                home = True
+                liabilities = False
             else:
                 try:
                     l_value = float(input('Please enter the value of your liability: '))
@@ -182,46 +202,73 @@ def entry():
                 liability_name.append(l_name)
                 liability_value.append(l_value)
                 liability_cr_dr.append(l_cr_dr)
+            print(f'Your current liabilities are {liability_name}')
         elif capital:
             pass
         elif drawings:
             pass
         elif revenue:
-            l_name = input('Please enter the name of your liability: ')
-            if 'del' in l_name:
-                delete = l_name.find('l')
-                index = liability_name.index(l_name[delete+2:])
-                liability_name.pop(index)
-                liability_value.pop(index)
-                liability_cr_dr.pop(index)
+            r_name = input('Please enter the name of your revenue: ')
+            if 'del' in r_name:
+                delete = r_name.find('l')
+                try:
+                    index = revenue_name.index(r_name[delete+2:])
+                except ValueError:
+                    print('Revenue account not found. Please re-enter.')
+                    continue
+                revenue_name.pop(index)
+                revenue_value.pop(index)
+                revenue_cr_dr.pop(index)
+            elif r_name == 'back':
+                home = True
+                revenue = False
             else:
                 try:
-                    l_value = float(input('Please enter the value of your liability: '))
+                    r_value = float(input('Please enter the amount of revenue for this account: '))
                 except ValueError:
-                    print('Value was invalid. Terminated previously entered liability. Please re-enter.')
+                    print('Value was invalid. Terminated previously entered revenue account. Please re-enter.')
                     continue
-                l_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
-                if l_cr_dr == 'dr' or l_cr_dr == 'cr':
+                r_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                if r_cr_dr == 'dr' or r_cr_dr == 'cr':
                     pass
                 else:
-                    print('Input was invalid. Terminated previously entered liability. Please re-enter.')
+                    print('Input was invalid. Terminated previously entered revenue account. Please re-enter.')
                     continue
-                liability_name.append(l_name)
-                liability_value.append(l_value)
-                liability_cr_dr.append(l_cr_dr)
-            print(liability_name)
-            print(liability_value)
-            print(liability_cr_dr)
+                revenue_name.append(r_name)
+                revenue_value.append(r_value)
+                revenue_cr_dr.append(r_cr_dr)
+            print(f'Your current revenue accounts are {revenue_name}')
         elif expenses:
-            pass
-       # if Key.esc:
-            home = True
-            assets = False
-            liabilities = False
-            capital = False
-            drawings = False
-            revenue = False
-            expenses = False
+            r_name = input('Please enter the name of your revenue: ')
+            if 'del' in r_name:
+                delete = r_name.find('l')
+                try:
+                    index = revenue_name.index(r_name[delete+2:])
+                except ValueError:
+                    print('Revenue account not found. Please re-enter.')
+                    continue
+                revenue_name.pop(index)
+                revenue_value.pop(index)
+                revenue_cr_dr.pop(index)
+            elif r_name == 'back':
+                home = True
+                revenue = False
+            else:
+                try:
+                    r_value = float(input('Please enter the amount of revenue for this account: '))
+                except ValueError:
+                    print('Value was invalid. Terminated previously entered revenue account. Please re-enter.')
+                    continue
+                r_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                if r_cr_dr == 'dr' or r_cr_dr == 'cr':
+                    pass
+                else:
+                    print('Input was invalid. Terminated previously entered revenue account. Please re-enter.')
+                    continue
+                revenue_name.append(r_name)
+                revenue_value.append(r_value)
+                revenue_cr_dr.append(r_cr_dr)
+            print(f'Your current revenue accounts are {revenue_name}')
 
 
 if __name__ == '__main__':
