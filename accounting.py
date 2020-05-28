@@ -125,8 +125,8 @@ def home_page():
 def chart_of_accounts_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
     left = centre_x - width/2
     right = centre_x + width/2
-    top = centre_x + height/2
-    bottom = centre_x - width/2
+    top = centre_y + height/2
+    bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
@@ -138,8 +138,8 @@ def chart_of_accounts_bttn(centre_x, centre_y, width, height, color_press, color
 def trial_balance_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
     left = centre_x - width/2
     right = centre_x + width/2
-    top = centre_x + height/2
-    bottom = centre_x - width/2
+    top = centre_y + height/2
+    bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
@@ -151,8 +151,8 @@ def trial_balance_bttn(centre_x, centre_y, width, height, color_press, color_hov
 def income_statement_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
     left = centre_x - width/2
     right = centre_x + width/2
-    top = centre_x + height/2
-    bottom = centre_x - width/2
+    top = centre_y + height/2
+    bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
@@ -164,8 +164,8 @@ def income_statement_bttn(centre_x, centre_y, width, height, color_press, color_
 def balance_sheet_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
     left = centre_x - width/2
     right = centre_x + width/2
-    top = centre_x + height/2
-    bottom = centre_x - width/2
+    top = centre_y + height/2
+    bottom = centre_y - height/2
     if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
