@@ -9,6 +9,7 @@ trial_balance = False
 balance_sheet = False
 income_statement = False
 entry_complete = False
+main_menu = False
 
 home_page_press = False
 chart_of_accounts_press = False
@@ -75,6 +76,8 @@ def update(delta_time):
 
 
 def on_draw():
+    global home_page, chart_of_accounts, trial_balance, income_statement
+    global main_menu, balance_sheet, interval_selection_done
     arcadeplus.start_render()
     # Draw in here...
     if home_page:
@@ -131,6 +134,7 @@ def on_mouse_motion(x, y, dx, dy):
 
 
 def home():
+    arcadeplus.set_background_color(arcadeplus.color.DARK_GREEN)
     arcadeplus.draw_text('Accounting Helper', 340, 530, arcadeplus.color.BLUE_VIOLET, 35, font_name='calibri')
     chart_of_accounts_bttn(WIDTH/2, 400, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
     trial_balance_bttn(WIDTH/2, 350, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
@@ -154,12 +158,13 @@ def chart_of_accounts_bttn(centre_x, centre_y, width, height, color_press, color
         chart_of_accounts_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+        if chart_of_accounts_press:
+            chart_of_accounts_press = False
+            chart_of_accounts = True
+            home_page = False
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-    if chart_of_accounts_press:
         chart_of_accounts_press = False
-        chart_of_accounts = True
-        home_page = False
 
 
 def trial_balance_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
@@ -173,12 +178,13 @@ def trial_balance_bttn(centre_x, centre_y, width, height, color_press, color_hov
         trial_balance_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+        if trial_balance_press:
+            trial_balance_press = False
+            trial_balance = True
+            home_page = False
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-    if trial_balance_press:
         trial_balance_press = False
-        trial_balance = True
-        home_page = False
 
 
 def income_statement_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
@@ -192,12 +198,13 @@ def income_statement_bttn(centre_x, centre_y, width, height, color_press, color_
         income_statement_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+        if income_statement_press:
+            income_statement_press = False
+            income_statement = True
+            home_page = False
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-    if income_statement_press:
         income_statement_press = False
-        income_statement = True
-        home_page = False
 
 
 def balance_sheet_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
@@ -211,18 +218,22 @@ def balance_sheet_bttn(centre_x, centre_y, width, height, color_press, color_hov
         balance_sheet_press = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+        if balance_sheet_press:
+            balance_sheet_press = False
+            balance_sheet = True
+            home_page = False
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-    if balance_sheet_press:
         balance_sheet_press = False
-        balance_sheet = True
-        home_page = False
 
 
 def interval_selection():
     arcadeplus.set_background_color(arcadeplus.color.DARK_BLUE_GRAY)
-    account_interval1(WIDTH/2, HEIGHT/3*2, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
-    account_interval5(WIDTH/2, HEIGHT/3, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    arcadeplus.draw_text('Select the interval in which you want your account numbers to go up by.', 70, 530, arcadeplus.color.WHITE, 24, font_name='calibri')
+    account_interval1(WIDTH/2, 390, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    account_interval5(WIDTH/2, 300, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    arcadeplus.draw_text('1s', 488, 379, arcadeplus.color.WHITE, 16, font_name='calibri')
+    arcadeplus.draw_text('5s', 488, 289, arcadeplus.color.WHITE, 16, font_name='calibri')
 
 
 def account_interval5(centre_x, centre_y, width, height, color_press, color_hover, color_default):
@@ -236,10 +247,12 @@ def account_interval5(centre_x, centre_y, width, height, color_press, color_hove
         interval5 = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+        if account_interval5:
+            interval_selection_done = True
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-    if account_interval5:
-        interval_selection_done = True
+        interval_selection_done = False
+        interval5 = False
 
 
 def account_interval1(centre_x, centre_y, width, height, color_press, color_hover, color_default):
@@ -253,10 +266,12 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
         interval1 = True
     elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+        if interval1:
+            interval_selection_done = True
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-    if interval1:
-        interval_selection_done = True
+        interval_selection_done = False
+        interval1 = False
 
 
 def make_chart_of_accounts():
