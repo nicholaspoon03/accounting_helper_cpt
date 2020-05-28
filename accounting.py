@@ -83,9 +83,10 @@ def on_draw():
     if home_page:
         home()
     elif chart_of_accounts:
-        interval_selection()
         if interval_selection_done:
             make_chart_of_accounts()
+        else:
+            interval_selection()
     elif trial_balance:
         pass
     elif income_statement:
@@ -238,21 +239,24 @@ def interval_selection():
 
 def account_interval5(centre_x, centre_y, width, height, color_press, color_hover, color_default):
     global interval5, interval_selection_done
-    left = centre_x - width/2
-    right = centre_x + width/2
-    top = centre_y + height/2
-    bottom = centre_y - height/2
-    if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
-        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
-        interval5 = True
-    elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
-        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
-        if account_interval5:
-            interval_selection_done = True
+    if interval_selection_done:
+        pass
     else:
-        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-        interval_selection_done = False
-        interval5 = False
+        left = centre_x - width/2
+        right = centre_x + width/2
+        top = centre_y + height/2
+        bottom = centre_y - height/2
+        if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
+            arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+            interval5 = True
+        elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
+            arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+            if interval5:
+                interval_selection_done = True
+        else:
+            arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
+            interval_selection_done = False
+            interval5 = False
 
 
 def account_interval1(centre_x, centre_y, width, height, color_press, color_hover, color_default):
@@ -275,7 +279,7 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
 
 
 def make_chart_of_accounts():
-    pass
+    arcadeplus.set_background_color(arcadeplus.color.WHITE)
 
 
 def make_trial_balance():
