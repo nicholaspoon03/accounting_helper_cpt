@@ -40,9 +40,18 @@ expense_name = []
 expense_value = []
 expense_cr_dr = []
 
+chart_of_accounts_bttn = False
+trial_balance_bttn = False
+income_statement_bttn = False
+balance_sheet_bttn = False
+
+mouse_press = False
+mouse_x = 0
+mouse_y = 0
+
 def setup():
     arcadeplus.open_window(WIDTH, HEIGHT, "Accounting Helper")
-    arcadeplus.set_background_color(arcadeplus.color.WHITE)
+    arcadeplus.set_background_color(arcadeplus.color.DARK_GREEN)
     arcadeplus.schedule(update, 1/60)
 
     # Override arcade window methods
@@ -51,6 +60,8 @@ def setup():
     window.on_key_press = on_key_press
     window.on_key_release = on_key_release
     window.on_mouse_press = on_mouse_press
+    window.on_mouse_release = on_mouse_release
+    window.on_mouse_motion = on_mouse_motion
 
     arcadeplus.run()
 
@@ -62,8 +73,6 @@ def update(delta_time):
 def on_draw():
     arcadeplus.start_render()
     # Draw in here...
-    # Create parellel lists of x and y values for trees. Use a while loop to loop through both lists.
-    # Loop over index
     if home_page:
         home_page()
     elif chart_of_accounts:
@@ -85,12 +94,64 @@ def on_key_release(key, modifiers):
 
 
 def on_mouse_press(x, y, button, modifiers):
-    pass
+    global mouse_press
+    if button == arcadeplus.MOUSE_BUTTON_LEFT:
+        mouse_press = True
+    # global chart_of_accounts_bttn, trial_balance_bttn
+    # global income_statement_bttn, balance_sheet_bttn
+    # if home_page:
+    #     if 400 <= x <= 600 and 380 <= y <= 420:
+    #         chart_of_accounts_bttn = True
+    #     elif 400 <= x <= 600 and 330 <= y <= 370:
+    #         trial_balance_bttn = True
+    #     elif 400 <= x <= 600 and 280 <= y <= 320:
+    #         income_statement_bttn = True
+    #     elif 400 <= x <= 600 and 230 <= y <= 270:
+    #         balance_sheet_bttn = True
+
+
+def on_mouse_release(x, y, button, modifiers):
+    global mouse_press
+    if button == arcadeplus.MOUSE_BUTTON_LEFT:
+        mouse_press = False
+    # global chart_of_accounts_bttn, trial_balance_bttn
+    # global income_statement_bttn, balance_sheet_bttn
+    # chart_of_accounts_bttn = False
+    # trial_balance_bttn = False
+    # income_statement_bttn = False
+    # balance_sheet_bttn = False
+
+
+def on_mouse_motion(x, y, dx, dy):
+    global mouse_x, mouse_y
+    mouse_x = x
+    mouse_y = y
 
 
 def home_page():
-    arcadeplus.draw_rectangle_filled(WIDTH/2, 360, 200, 40, arcadeplus.color.LIME_GREEN)
+    arcadeplus.draw_text('Accounting Helper', 340, 530, arcadeplus.color.BLUE_VIOLET, 35, font_name='calibri')
+    button_looks(WIDTH/2, 400, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
+    # arcadeplus.draw_rectangle_filled(WIDTH/2, 400, 200, 40, arcadeplus.color.LIME_GREEN)
+    # arcadeplus.draw_rectangle_filled(WIDTH/2, 350, 200, 40, arcadeplus.color.LIME_GREEN)
+    # arcadeplus.draw_rectangle_filled(WIDTH/2, 300, 200, 40, arcadeplus.color.LIME_GREEN)
+    # arcadeplus.draw_rectangle_filled(WIDTH/2, 250, 200, 40, arcadeplus.color.LIME_GREEN)
+    # arcadeplus.draw_text('Chart of Accounts', 430, 388, arcadeplus.color.BLACK, 16, font_name='calibri')
+    # arcadeplus.draw_text('Trial Balance', 450, 338, arcadeplus.color.BLACK, 16, font_name='calibri')
+    # arcadeplus.draw_text('Income Statement', 428, 288, arcadeplus.color.BLACK, 16, font_name='calibri')
+    # arcadeplus.draw_text('Balance Sheet', 445, 238, arcadeplus.color.BLACK, 16, font_name='calibri')
 
+
+def button_looks(centre_x, centre_y, width, height, color_press, color_hover, color_default):
+    left = centre_x - width/2
+    right = centre_x + width/2
+    top = centre_x + height/2
+    bottom = centre_x - width/2
+    if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
+    elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
+    else:
+        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
 
 def chart_of_accounts():
     pass
@@ -126,7 +187,7 @@ def entry():
     print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
     print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type 'del account name' but replace 'account name' with the account name.")
     print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only\ndelete assets when you are in the assets menu.\n')
-    print("Press esc to go back to the main menu to enter another type of account.\n")
+    print("Type 'back' to go back to the main menu to enter another type of account.\n")
     print("When all data is entered, go back to the main menu and type 'create' to start creating your worksheets.\n")
     while True:
         if home:
@@ -154,8 +215,13 @@ def entry():
                 expenses = True
                 home = False
             elif n == 'create':
+                print("Type 'back' at any point to go back to main menu or if you make a mistake in any of the following inputs.")
                 name = input('Please enter the name of your company: ')
+                if name == 'back':
+                    continue
                 date = input('Please enter the date in the following format (mm/dd/yyyy): ')
+                if date == 'back':
+                    continue
                 try:
                     month = int(date[:2])
                     day = int(date[3:5])
@@ -196,6 +262,8 @@ def entry():
                 f_period = input("Please enter 'year' or 'month' for the fiscal period: ")
                 if f_period == 'year' or f_period == 'month':
                     pass
+                elif f_period == 'back':
+                    continue
                 else:
                     print('Not a valid input. Please re-enter information.')
                     error = True
