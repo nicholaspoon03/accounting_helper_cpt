@@ -11,6 +11,11 @@ balance_sheet = False
 income_statement = False
 entry_complete = False
 
+month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31, 'June': 30, 'July': 31, 'August': 31, 'September': 30, 'October': 31, 'November': 30, 'December': 31}
+#month_days = {31: ['January', 'March', 'May', 'July', 'August', 'October', 'December'], 30: {'April', 'June', 'September', 'November'}}
+month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
+'August', 'September', 'October', 'November', 'December']
+
 asset_name = []
 asset_value = []
 asset_cr_dr = []
@@ -107,7 +112,7 @@ def entry():
     global entry_complete, asset_name, asset_value, asset_cr_dr, liability_name, liability_value
     global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
     global expense_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name, drawing_value
-    global drawing_cr_dr
+    global drawing_cr_dr, name, month, day, year, f_period, month_days, month_list
     home = True
     assets = False
     liabilities = False
@@ -150,17 +155,45 @@ def entry():
                 home = False
             elif n == 'create':
                 name = input('Please enter the name of your company: ')
-                date = input('Please enter the date in the following format (Month day, year) - NO SHORT FORM: ')
-                f_period = input("Please enter 'year' or 'month' for the fiscal period: ")
-                if f_period == 'year':
+                date = input('Please enter the date in the following format (mm/dd/yyyy): ')
+                if len(date) != 10:
+                    print('Not a valid date. Please re-enter information.')
+                    error = True
+                elif True:
                     try:
-                        f_period_time = int(input("Please enter the year of the fiscal period: "))
+                        month = int(date[:1])
+                        day = int(date[3:5])
+                        year = int(date[-4:])
                     except ValueError:
-                        print('Not a valid year. Please re-enter information.')
+                        print('Not a valid date. Please re-enter information.')
                         error = True
                         continue
+                elif month < 0 or month > 12:
+                    print('Not a valid date. Please re-enter information')
+                    error = True
+                    continue
+                elif year < 0:
+                    print('Not a valid date. Please re-enter information')
+                    error = True
+                    continue
                 else:
-                    f_period_time = input('Please enter the month of the fiscal period: ')
+                    month = month_list[int(date:1)-1]
+                    if month == 'February':
+                        if year % 4 == 0:
+                            if day > 29:
+                                print('Not a valid date. Please re-enter information')
+                                error = True
+                                continue
+                        else:
+                            if day > 28:
+                                print('Not a valid date. Please re-enter information')
+                                error = True
+                                continue
+                    if day > month_days[month]:
+                        print('Not a valid date. Please re-enter information')
+                        error = True
+                        continue
+                f_period = input("Please enter 'year' or 'month' for the fiscal period: ")
                 entry_complete = True
                 break
             else:
