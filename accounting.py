@@ -298,10 +298,13 @@ def liquidity():
         bank = True
     except:
         bank = False
-    asset_name2 = asset_name
-    for n in range(len(asset_name2)):
-        if 'a/r' in asset_name2[n]:
-            a_r = asset_name2[n]
+    asset_name_copy = asset_name
+    rem_times = 0
+    print(asset_name)
+    print(asset_name_copy)
+    for n in range(len(asset_name)+rem_times):
+        if 'a/r' in asset_name[n-rem_times]:
+            a_r = asset_name[n-rem_times]
             debtor = a_r[4:]
             semi_colon = debtor.find(';')
             if semi_colon == -1:
@@ -321,16 +324,17 @@ def liquidity():
                 debtor = ''
                 for i in range(len(capitalize_list)):
                     debtor += capitalize_list[i].capitalize()
-                    if i != len(capitalize_list)-1:
+                    if i != len(capitalize_list) - 1:
                         debtor += ' '
                 capitalize_list.clear()
                 a_r_name.append(debtor)
                 debtor_ppl.append(debtor)
-            asset_name.remove(asset_name[n])
-            a_r_value.append(asset_value[n])
-            a_r_dc.append(asset_cr_dr[n])
-            asset_value.pop(n)
-            asset_cr_dr.pop(n)
+            asset_name.pop(n-rem_times)
+            rem_times += 1
+            a_r_value.append(asset_value[n-rem_times])
+            a_r_dc.append(asset_cr_dr[n-rem_times])
+            asset_value.pop(n-rem_times)
+            asset_cr_dr.pop(n-rem_times)
     if len(a_r_name) != 0:
         for n in range(len(a_r_name)):
             a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
@@ -346,10 +350,10 @@ def liquidity():
         for n in alphabetical_a_r:
             a_r_value.append(a_r_dict[n][0])
             a_r_dc.append(a_r_dict[n][1])
-        for i, j in a_r_dict.items():
-            if i in debtor_ppl:
-                space = i.find(' ')
-                debtor = i[space+1:] + ' ' + i[:space]
+        for n in alphabetical_a_r:
+            if alphabetical_a_r[n] in debtor_ppl:
+                space = alphabetical_a_r[n].find(' ')
+                debtor = alphabetical_a_r[n][space+1:] + ' ' + alphabetical_a_r[n][:space]
                 a_r_name.append(debtor)
             else:
                 a_r_name.append(i)
