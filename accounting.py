@@ -30,12 +30,12 @@ asset_name = []
 asset_value = []
 asset_cr_dr = []
 
-a_r_name = []
-a_r_value = []
-a_r_dc = []
-debtor_ppl = []
-a_r_value_dc = []
-a_r_dict = {}
+a_r_p_name = []
+a_r_p_value = []
+a_r_p_dc = []
+dc_ppl = []
+a_r_p_2d = []
+a_r_p_dict = {}
 bank = True
 
 liability_name = []
@@ -298,16 +298,26 @@ def liquidity_assets():
         bank = True
     except:
         bank = False
-    asset_name_copy = asset_name
+    liquidity_ar_ap(asset_name, asset_value, asset_cr_dr, 'A/R')
+
+
+def liquidity_liabilities():
+    bank = True
+    liquidity_ar_ap(liability_name, liability_value, liability_cr_dr, 'A/P')
+
+
+def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text):
+    global a_r_p_dict, a_r_p_name, a_r_p_value
+    global a_r_p_dc, a_r_p_2d, dc_ppl, count
     rem_times = 0
-    for n in range(len(asset_name)+rem_times):
-        if 'a/r' in asset_name[n-rem_times]:
-            a_r = asset_name[n-rem_times]
+    for n in range(len(acct_t_name)+rem_times):
+        if 'a/r' in acct_t_name[n-rem_times]:
+            a_r = acct_t_name[n-rem_times]
             debtor = a_r[4:]
             semi_colon = debtor.find(';')
             if semi_colon == -1:
                 if debtor.find(' ') == -1:
-                    a_r_name.append(debtor.capitalize())
+                    a_r_p_name.append(debtor.capitalize())
                 else:
                     capitalize_list = debtor.split(' ')
                     debtor = ''
@@ -315,7 +325,7 @@ def liquidity_assets():
                         debtor += capitalize_list[i].capitalize()
                         if i != len(capitalize_list) - 1:
                             debtor += ' '
-                    a_r_name.append(debtor)
+                    a_r_p_name.append(debtor)
                     capitalize_list.clear()
             else:
                 capitalize_list = debtor.split(';')
@@ -325,116 +335,51 @@ def liquidity_assets():
                     if i != len(capitalize_list) - 1:
                         debtor += ' '
                 capitalize_list.clear()
-                a_r_name.append(debtor)
-                debtor_ppl.append(debtor)
-            asset_name.pop(n-rem_times)
-            a_r_value.append(asset_value[n-rem_times])
-            a_r_dc.append(asset_cr_dr[n-rem_times])
-            asset_value.pop(n-rem_times)
-            asset_cr_dr.pop(n-rem_times)
+                a_r_p_name.append(debtor)
+                dc_ppl.append(debtor)
+            acct_t_name.pop(n-rem_times)
+            a_r_p_value.append(acct_t_value[n-rem_times])
+            a_r_p_dc.append(acct_t_dc[n-rem_times])
+            acct_t_value.pop(n-rem_times)
+            acct_t_dc.pop(n-rem_times)
             rem_times += 1
-    if len(a_r_name) != 0:
-        for n in range(len(a_r_name)):
-            a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
-        for n in a_r_name:
-            for x, y in a_r_value_dc:
-                a_r_dict[n] = [x, y]
-                a_r_value_dc.remove([x, y])
+    if len(a_r_p_name) != 0:
+        for n in range(len(a_r_p_name)):
+            a_r_p_2d.append([a_r_p_value[n], a_r_p_dc[n]])
+        for n in a_r_p_name:
+            for x, y in a_r_p_2d:
+                a_r_p_dict[n] = [x, y]
+                a_r_p_2d.remove([x, y])
                 break
-        alphabetical_a_r = sorted(a_r_dict)
-        a_r_name.clear()
-        a_r_value.clear()
-        a_r_dc.clear()
-        for n in alphabetical_a_r:
-            a_r_value.append(a_r_dict[n][0])
-            a_r_dc.append(a_r_dict[n][1])
-            if n in debtor_ppl:
+        alphabetical_a_r_p = sorted(a_r_p_dict)
+        a_r_p_name.clear()
+        a_r_p_value.clear()
+        a_r_p_dc.clear()
+        for n in alphabetical_a_r_p:
+            a_r_p_value.append(a_r_p_dict[n][0])
+            a_r_p_dc.append(a_r_p_dict[n][1])
+            if n in dc_ppl:
                 space = n.find(' ')
                 debtor = n[space+1:] + ' ' + n[:space]
-                a_r_name.append(debtor)
+                a_r_p_name.append(debtor)
             else:
-                a_r_name.append(n)
-    for n in range(len(a_r_name)):
-        if bank:
-            i = 1
-        else:
-            i = 0
-        asset_name.insert(i, a_r_name[n])
-        asset_value.insert(i, a_r_value[n])
-        asset_cr_dr.insert(i, a_r_dc[n])
+                a_r_p_name.append(n)
+    if bank:
+        i = 1
+    else:
+        i = 0
+    count = len(a_r_p_name)
+    for n in range(count):
+        acct_t_name.insert(i, f'{text} {a_r_p_name[n]}')
+        acct_t_value.insert(i, a_r_p_value[n])
+        acct_t_dc.insert(i, a_r_p_dc[n])
         i += 1
-
-
-def liquidity_liability():
-    global asset_name, asset_value, asset_cr_dr, a_r_dict, a_r_name, a_r_value, bank
-    global a_r_dc, a_r_value_dc, debtor_ppl
-    try:
-        i = asset_name.index('bank')
-        account_name = asset_name.pop(i)
-        account_value = asset_value.pop(i)
-        account_dr_cr = asset_cr_dr.pop(i)
-        asset_name.insert(0, account_name)
-        asset_value.insert(0, account_value)
-        asset_cr_dr.insert(0, account_dr_cr)
-        bank = True
-    except:
-        bank = False
-    asset_name_copy = asset_name
-    rem_times = 0
-    for n in range(len(asset_name)+rem_times):
-        if 'a/r' in asset_name[n-rem_times]:
-            a_r = asset_name[n-rem_times]
-            debtor = a_r[4:]
-            semi_colon = debtor.find(';')
-            if semi_colon == -1:
-                if debtor.find(' ') == -1:
-                    a_r_name.append(debtor.capitalize())
-                else:
-                    capitalize_list = debtor.split(' ')
-                    debtor = ''
-                    for i in range(len(capitalize_list)):
-                        debtor += capitalize_list[i].capitalize()
-                        if i != len(capitalize_list) - 1:
-                            debtor += ' '
-                    a_r_name.append(debtor)
-                    capitalize_list.clear()
-            else:
-                capitalize_list = debtor.split(';')
-                debtor = ''
-                for i in range(len(capitalize_list)):
-                    debtor += capitalize_list[i].capitalize()
-                    if i != len(capitalize_list) - 1:
-                        debtor += ' '
-                capitalize_list.clear()
-                a_r_name.append(debtor)
-                debtor_ppl.append(debtor)
-            asset_name.pop(n-rem_times)
-            a_r_value.append(asset_value[n-rem_times])
-            a_r_dc.append(asset_cr_dr[n-rem_times])
-            asset_value.pop(n-rem_times)
-            asset_cr_dr.pop(n-rem_times)
-            rem_times += 1
-    if len(a_r_name) != 0:
-        for n in range(len(a_r_name)):
-            a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
-        for n in a_r_name:
-            for x, y in a_r_value_dc:
-                a_r_dict[n] = [x, y]
-                a_r_value_dc.remove([x, y])
-                break
-        alphabetical_a_r = sorted(a_r_dict)
-        a_r_name.clear()
-        a_r_value.clear()
-        a_r_dc.clear()
-        for n in alphabetical_a_r:
-            a_r_value.append(a_r_dict[n][0])
-            a_r_dc.append(a_r_dict[n][1])
-            if n in debtor_ppl:
-                space = n.find(' ')
-                debtor = n[space+1:] + ' ' + n[:space]
-                a_r_name.append(debtor)
-            else:
-                a_r_name.append(n)
+    a_r_p_dict.clear()
+    a_r_p_name.clear()
+    a_r_p_value.clear()
+    a_r_p_dc.clear()
+    a_r_p_2d.clear()
+    dc_ppl.clear()
 
 
 def make_chart_of_accounts():
@@ -593,7 +538,7 @@ def entry():
             if a_name != 'back':
                 print(f'Your current assets are {asset_name}')
         elif liabilities:
-            print("Plese enter accounts payable in the form of 'a/r creditor'; replace creditor with the creditor")
+            print("Plese enter accounts payable in the form of 'a/p creditor'; replace creditor with the creditor")
             print("Note: If creditor is a person, please enter name in this format: 'lastname;firstname'")
             l_name = input('Please enter the name of your liability: ').lower()
             if '(del)' in l_name:
@@ -780,5 +725,5 @@ def entry():
 if __name__ == '__main__':
     entry()
     if entry_complete:
-        liquidity()
+        liquidity_assets()
         setup()
