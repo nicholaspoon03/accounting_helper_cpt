@@ -298,28 +298,30 @@ def liquidity():
         bank = True
     except:
         bank = False
-    n_assets = len(asset_name)
-    for n in range(n_assets):
-        if 'a/r' in asset_name[n]:
-            a_r = asset_name[n]
+    asset_name2 = asset_name
+    for n in range(len(asset_name2)):
+        if 'a/r' in asset_name2[n]:
+            a_r = asset_name2[n]
             debtor = a_r[4:]
-            slash = debtor.find('/')
-            if slash == -1:
+            semi_colon = debtor.find(';')
+            if semi_colon == -1:
                 if debtor.find(' ') == -1:
                     a_r_name.append(debtor.capitalize())
                 else:
                     capitalize_list = debtor.split(' ')
+                    debtor = ''
                     for i in range(len(capitalize_list)):
-                        debtor += capitalize_list[n].capitalize()
-                        if n != len(capitalize_list) - 1:
+                        debtor += capitalize_list[i].capitalize()
+                        if i != len(capitalize_list) - 1:
                             debtor += ' '
                     a_r_name.append(debtor)
                     capitalize_list.clear()
             else:
-                capitalize_list = debtor.split('/')
+                capitalize_list = debtor.split(';')
+                debtor = ''
                 for i in range(len(capitalize_list)):
-                    debtor += capitalize_list[n].capitalize()
-                    if n != len(capitalize_list)-1:
+                    debtor += capitalize_list[i].capitalize()
+                    if i != len(capitalize_list)-1:
                         debtor += ' '
                 capitalize_list.clear()
                 a_r_name.append(debtor)
@@ -388,7 +390,7 @@ def entry():
     print("Welcome to Accounting Helper\n")
     print("This app allows you to make a chart of accounts, trial balance, income statement, and balance sheet with a\nsimple input of your assets, liabilities, and owner's equity.\n")
     print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
-    print('Please type any names in the following format: lastname/firstname unless otherwise stated')
+    print('Please type any names in the following format: lastname;firstname unless otherwise stated')
     print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type '(del) account name' but replace 'account name' with the account name.")
     print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only\ndelete assets when you are in the assets menu.\n')
     print("Type 'back' to go back to the main menu to enter another type of account.\n")
@@ -478,7 +480,7 @@ def entry():
                 print('Please enter a valid input')
         elif assets:
             print("Please enter accounts receivable in the form of 'a/r debtor'; replace debtor with the debtor")
-            print("Note: If debtor is a person, please enter name in this format: 'lastname/firstname'")
+            print("Note: If debtor is a person, please enter name in this format: 'lastname;firstname'")
             a_name = input('Please enter the name of your asset: ').lower()
             if '(del)' in a_name:
                 delete = a_name.find(')')
@@ -513,7 +515,7 @@ def entry():
                 print(f'Your current assets are {asset_name}')
         elif liabilities:
             print("Plese enter accounts payable in the form of 'a/r creditor'; replace creditor with the creditor")
-            print("Note: If creditor is a person, please enter name in this format: 'lastname/firstname'")
+            print("Note: If creditor is a person, please enter name in this format: 'lastname;firstname'")
             l_name = input('Please enter the name of your liability: ').lower()
             if '(del)' in l_name:
                 delete = l_name.find(')')
