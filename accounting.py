@@ -30,7 +30,11 @@ asset_name = []
 asset_value = []
 asset_cr_dr = []
 
-a_r_list = []
+a_r_name = []
+a_r_value = []
+a_r_dc = []
+a_r_value_dc = []
+a_r_dict = {}
 bank = True
 
 liability_name = []
@@ -280,7 +284,8 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
 
 
 def liquidity():
-    global asset_name, asset_value, asset_cr_dr, a_r_list, bank
+    global asset_name, asset_value, asset_cr_dr, a_r_dict, a_r_name, a_r_value, bank
+    global a_r_dc, a_r_value_dc
     try:
         i = asset_name.index('bank')
         account_name = asset_name.pop(i)
@@ -298,29 +303,27 @@ def liquidity():
             a_r = asset_name[n]
             reverse = a_r[::-1]
             i = reverse.find('elbaviecer stnuocca')
-            r_debtor = reverse[:i]
-            debtor = r_debtor[::-1]
-            comma = debtor.find(',')
-            if comma == -1:
-                a_r_list.append(debtor)
-            else:
-                debtor_name = debtor[comma+1:] + debtor[:comma]
-                a_r_list.append(debtor_name)
-            asset_name.remove(asset_name[n])
-            asset_value.pop(n)
-            asset_cr_dr.pop(n)
         elif 'a/r' in asset_name[n]:
             a_r = asset_name[n]
             reverse = a_r[::-1]
             i = reverse.find('r/a')
-            r_debtor = reverse[:i]
-            debtor = r_debtor[::-1]
-            a_r_list.append(debtor)
-            asset_name.remove(asset_name[n])
-            asset_value.pop(n)
-            asset_cr_dr.pop(n)
-    a_r_list.sort()
-
+        r_debtor = reverse[:i]
+        debtor = r_debtor[::-1]
+        comma = debtor.find(',')
+        if comma == -1:
+            a_r_name.append(debtor)
+        else:
+            debtor_name = debtor[comma+1:] + debtor[:comma]
+            a_r_name.append(debtor_name)
+        asset_name.remove(asset_name[n])
+        a_r_value.append(asset_value[n])
+        a_r_dc.append(asset_cr_dr[n])
+        asset_value.pop(n)
+        asset_cr_dr.pop(n)
+    for n in range(len(a_r_name)):
+        a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
+    for x, y in a_r_value_dc:
+        for 
 
 
 def make_chart_of_accounts():
