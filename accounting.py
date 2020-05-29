@@ -322,8 +322,17 @@ def liquidity():
         asset_cr_dr.pop(n)
     for n in range(len(a_r_name)):
         a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
-    for x, y in a_r_value_dc:
-        for 
+    for n in a_r_name:
+        for x, y in a_r_value_dc:
+            a_r_value_dc[n] = x, y
+            a_r_value_dc.remove([x, y])
+            break
+    alphabetical_a_r = sorted(a_r_value_dc)
+    a_r_value.clear()
+    a_r_dc.clear()
+    for n in alphabetical_a_r:
+        a_r_value.append(a_r_value_dc[n][0])
+        a_r_dc.append(a_r_value_dc[n][1])
 
 
 def make_chart_of_accounts():
