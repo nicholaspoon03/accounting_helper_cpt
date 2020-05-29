@@ -299,22 +299,28 @@ def liquidity():
         bank = False
     n_assets = len(asset_name)
     for n in range(n_assets):
-        if 'accounts receivable' in asset_name[n]:
+        if 'a/r' in asset_name[n]:
             a_r = asset_name[n]
-            reverse = a_r[::-1]
-            i = reverse.find('elbaviecer stnuocca')
-        elif 'a/r' in asset_name[n]:
-            a_r = asset_name[n]
-            reverse = a_r[::-1]
-            i = reverse.find('r/a')
-        if 'accounts receivable' in asset_name[n] or 'a/r' in asset_name[n]:
-            r_debtor = reverse[:i]
-            debtor = r_debtor[::-1]
-            comma = debtor.find(',')
-            if comma == -1:
-                a_r_name.append(debtor)
+            debtor = a_r[4:]
+            slash = debtor.find('/')
+            if slash == -1:
+                if debtor.find(' ') == -1:
+                    a_r_name.append(capitalize(debtor))
+                else:
+                    capitalize_list = debtor.split(' ')
+                    for i in range(len(capitalize_list)):
+                        debtor += capitalize(capitalize_list[n])
+                        if n != len(capitalize_list) - 1:
+                            debtor += ' '
+                    capitalize_list.clear()
             else:
-                debtor_name = debtor[comma+1:] + debtor[:comma]
+                capitalize_list = debtor.split('/')
+                for i in range(len(capitalize_list)):
+                    debtor += capitalize[capitalize_list[n]]
+                    if n != len(capitalize_list)-1:
+                        debtor += ' '
+                capitalize_list.clear()
+                #debtor_name = debtor[slash+1:] + debtor[:slash]
                 a_r_name.append(debtor_name)
             asset_name.remove(asset_name[n])
             a_r_value.append(asset_value[n])
@@ -370,7 +376,7 @@ def entry():
     print("Welcome to Accounting Helper\n")
     print("This app allows you to make a chart of accounts, trial balance, income statement, and balance sheet with a\nsimple input of your assets, liabilities, and owner's equity.\n")
     print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
-    print('Please type any names in the following format: lastname, firstname')
+    print('Please type any names in the following format: lastname/firstname unless otherwise stated')
     print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type '(del) account name' but replace 'account name' with the account name.")
     print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only\ndelete assets when you are in the assets menu.\n')
     print("Type 'back' to go back to the main menu to enter another type of account.\n")
@@ -378,7 +384,7 @@ def entry():
     while True:
         if home:
             if not error:
-                n = input('Please enter the type of account that you would like to enter: ')
+                n = input('Please enter the type of account that you would like to enter: ').lower()
             else:
                 n = 'create'
                 error = False
@@ -445,7 +451,7 @@ def entry():
                         error = True
                 if error:
                     continue
-                f_period = input("Please enter 'year' or 'month' for the fiscal period: ")
+                f_period = input("Please enter 'year' or 'month' for the fiscal period: ").lower()
                 if f_period == 'year' or f_period == 'month':
                     pass
                 elif f_period == 'back':
@@ -459,6 +465,8 @@ def entry():
             else:
                 print('Please enter a valid input')
         elif assets:
+            print("Please enter accounts receivable in the form of 'a/r debtor'; replace debtor with the debtor")
+            print("Note: If debtor is a person, please enter name in this format: 'lastname/firstname'")
             a_name = input('Please enter the name of your asset: ').lower()
             if '(del)' in a_name:
                 delete = a_name.find(')')
@@ -482,7 +490,7 @@ def entry():
                 if a_value < 0:
                     print('Value was invalid. Terminated previously entered asset. Please re-enter.')
                     continue
-                a_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                a_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
                 if a_cr_dr != 'dr' and a_cr_dr != 'cr':
                     print('Input was invalid. Terminated previously entered asset. Please re-enter.')
                     continue
@@ -492,6 +500,8 @@ def entry():
             if a_name != 'back':
                 print(f'Your current assets are {asset_name}')
         elif liabilities:
+            print("Plese enter accounts payable in the form of 'a/r creditor'; replace creditor with the creditor")
+            print("Note: If creditor is a person, please enter name in this format: 'lastname/firstname'")
             l_name = input('Please enter the name of your liability: ').lower()
             if '(del)' in l_name:
                 delete = l_name.find(')')
@@ -515,7 +525,7 @@ def entry():
                 if l_value < 0:
                     print('Value was invalid. Terminated previously entered liability. Please re-enter.')
                     continue
-                l_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                l_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
                 if l_cr_dr == 'dr' or l_cr_dr == 'cr':
                     pass
                 else:
@@ -527,6 +537,7 @@ def entry():
             if l_name != 'back':    
                 print(f'Your current liabilities are {liability_name}')
         elif capital:
+            print("Note: Please enter capital accounts in the following format: 'firstname lastname, capital' or 'firstinitial. lastname, capital")
             c_name = input('Please enter the name of your capital account: ').lower()
             if '(del)' in c_name:
                 delete = c_name.find(')')
@@ -553,7 +564,7 @@ def entry():
                 if c_value < 0:
                     print('Value was invalid. Terminated previously entered capital account. Please re-enter.')
                     continue
-                c_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                c_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
                 if c_cr_dr == 'dr' or c_cr_dr == 'cr':
                     pass
                 else:
@@ -565,6 +576,7 @@ def entry():
             if c_name != 'back':
                 print(f'Your current capital accounts are {capital_name}')
         elif drawings:
+            print("Note: Please enter drawings accounts in the following format: 'firstname lastname, drawings' or 'firstinitial. lastname, capital")
             d_name = input('Please enter the name of your drawings account: ').lower()
             if '(del)' in d_name:
                 delete = d_name.find(')')
@@ -591,7 +603,7 @@ def entry():
                 if d_value < 0:
                     print('Value was invalid. Terminated previously entered drawings account. Please re-enter.')
                     continue
-                d_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                d_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
                 if d_cr_dr == 'dr' or d_cr_dr == 'cr':
                     pass
                 else:
@@ -626,7 +638,7 @@ def entry():
                 if r_value < 0:
                     print('Value was invalid. Terminated previously entered revenue account. Please re-enter.')
                     continue
-                r_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
+                r_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
                 if r_cr_dr == 'dr' or r_cr_dr == 'cr':
                     pass
                 else:
@@ -661,10 +673,8 @@ def entry():
                 if e_value < 0:
                     print('Value was invalid. Terminated previously entered expense. Please re-enter.')
                     continue
-                e_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
-                if e_cr_dr == 'dr' or e_cr_dr == 'cr':
-                    pass
-                else:
+                e_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
+                if e_cr_dr != 'dr' and e_cr_dr != 'cr':
                     print('Input was invalid. Terminated previously entered expense. Please re-enter.')
                     continue
                 expense_name.append(e_name)
