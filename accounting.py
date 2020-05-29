@@ -284,7 +284,7 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
         interval1 = False
 
 
-def liquidity():
+def liquidity_assets():
     global asset_name, asset_value, asset_cr_dr, a_r_dict, a_r_name, a_r_value, bank
     global a_r_dc, a_r_value_dc, debtor_ppl
     try:
@@ -300,8 +300,6 @@ def liquidity():
         bank = False
     asset_name_copy = asset_name
     rem_times = 0
-    print(asset_name)
-    print(asset_name_copy)
     for n in range(len(asset_name)+rem_times):
         if 'a/r' in asset_name[n-rem_times]:
             a_r = asset_name[n-rem_times]
@@ -330,17 +328,17 @@ def liquidity():
                 a_r_name.append(debtor)
                 debtor_ppl.append(debtor)
             asset_name.pop(n-rem_times)
-            rem_times += 1
             a_r_value.append(asset_value[n-rem_times])
             a_r_dc.append(asset_cr_dr[n-rem_times])
             asset_value.pop(n-rem_times)
             asset_cr_dr.pop(n-rem_times)
+            rem_times += 1
     if len(a_r_name) != 0:
         for n in range(len(a_r_name)):
             a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
         for n in a_r_name:
             for x, y in a_r_value_dc:
-                a_r_dict[n] = x, y
+                a_r_dict[n] = [x, y]
                 a_r_value_dc.remove([x, y])
                 break
         alphabetical_a_r = sorted(a_r_dict)
@@ -350,16 +348,12 @@ def liquidity():
         for n in alphabetical_a_r:
             a_r_value.append(a_r_dict[n][0])
             a_r_dc.append(a_r_dict[n][1])
-        for n in alphabetical_a_r:
-            if alphabetical_a_r[n] in debtor_ppl:
-                space = alphabetical_a_r[n].find(' ')
-                debtor = alphabetical_a_r[n][space+1:] + ' ' + alphabetical_a_r[n][:space]
+            if n in debtor_ppl:
+                space = n.find(' ')
+                debtor = n[space+1:] + ' ' + n[:space]
                 a_r_name.append(debtor)
             else:
-                a_r_name.append(i)
-    print(a_r_name)
-    print(a_r_value)
-    print(a_r_dc)
+                a_r_name.append(n)
 
 
 def make_chart_of_accounts():
