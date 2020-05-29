@@ -30,6 +30,9 @@ asset_name = []
 asset_value = []
 asset_cr_dr = []
 
+a_r_list = []
+bank = True
+
 liability_name = []
 liability_value = []
 liability_cr_dr = []
@@ -239,9 +242,7 @@ def interval_selection():
 
 def account_interval5(centre_x, centre_y, width, height, color_press, color_hover, color_default):
     global interval5, interval_selection_done
-    if interval_selection_done:
-        pass
-    else:
+    if not interval_selection_done:
         left = centre_x - width/2
         right = centre_x + width/2
         top = centre_y + height/2
@@ -278,6 +279,50 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
         interval1 = False
 
 
+def liquidity():
+    global asset_name, asset_value, asset_cr_dr, a_r_list, bank
+    try:
+        i = asset_name.index('bank')
+        account_name = asset_name.pop(i)
+        account_value = asset_value.pop(i)
+        account_dr_cr = asset_cr_dr.pop(i)
+        asset_name.insert(0, account_name)
+        asset_value.insert(0, account_value)
+        asset_cr_dr.insert(0, account_dr_cr)
+        bank = True
+    except:
+        bank = False
+    n_assets = len(asset_name)
+    for n in range(n_assets):
+        if 'accounts receivable' in asset_name[n]:
+            a_r = asset_name[n]
+            reverse = a_r[::-1]
+            i = reverse.find('elbaviecer stnuocca')
+            r_debtor = reverse[:i]
+            debtor = r_debtor[::-1]
+            comma = debtor.find(',')
+            if comma == -1:
+                a_r_list.append(debtor)
+            else:
+                debtor_name = debtor[comma+1:] + debtor[:comma]
+                a_r_list.append(debtor_name)
+            asset_name.remove(asset_name[n])
+            asset_value.pop(n)
+            asset_cr_dr.pop(n)
+        elif 'a/r' in asset_name[n]:
+            a_r = asset_name[n]
+            reverse = a_r[::-1]
+            i = reverse.find('r/a')
+            r_debtor = reverse[:i]
+            debtor = r_debtor[::-1]
+            a_r_list.append(debtor)
+            asset_name.remove(asset_name[n])
+            asset_value.pop(n)
+            asset_cr_dr.pop(n)
+    a_r_list.sort()
+
+
+
 def make_chart_of_accounts():
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
 
@@ -310,7 +355,8 @@ def entry():
     print("Welcome to Accounting Helper\n")
     print("This app allows you to make a chart of accounts, trial balance, income statement, and balance sheet with a\nsimple input of your assets, liabilities, and owner's equity.\n")
     print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
-    print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type 'del account name' but replace 'account name' with the account name.")
+    print('Please type any names in the following format: lastname, firstname')
+    print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type '(del) account name' but replace 'account name' with the account name.")
     print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only\ndelete assets when you are in the assets menu.\n')
     print("Type 'back' to go back to the main menu to enter another type of account.\n")
     print("When all data is entered, go back to the main menu and type 'create' to start creating your worksheets.\n")
@@ -351,7 +397,7 @@ def entry():
                     month = int(date[:2])
                     day = int(date[3:5])
                     year = int(date[-4:])
-                except ValueError:
+                except:
                     print('Not a valid date. Please re-enter information.')
                     error = True
                 if error:
@@ -398,12 +444,12 @@ def entry():
             else:
                 print('Please enter a valid input')
         elif assets:
-            a_name = input('Please enter the name of your asset: ')
-            if 'del' in a_name:
-                delete = a_name.find('l')
+            a_name = input('Please enter the name of your asset: ').lower()
+            if '(del)' in a_name:
+                delete = a_name.find(')')
                 try:
                     index = asset_name.index(a_name[delete+2:])
-                except ValueError:
+                except:
                     print('Asset not found. Please re-enter.')
                     continue
                 asset_name.pop(index)
@@ -415,16 +461,14 @@ def entry():
             else:
                 try:
                     a_value = float(input('Please enter the value of your asset: '))
-                except ValueError:
+                except:
                     print('Value was invalid. Terminated previously entered asset. Please re-enter.')
                     continue
                 if a_value < 0:
                     print('Value was invalid. Terminated previously entered asset. Please re-enter.')
                     continue
                 a_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ")
-                if a_cr_dr == 'dr' or a_cr_dr == 'cr':
-                    pass
-                else:
+                if a_cr_dr != 'dr' and a_cr_dr != 'cr':
                     print('Input was invalid. Terminated previously entered asset. Please re-enter.')
                     continue
                 asset_name.append(a_name)
@@ -433,12 +477,12 @@ def entry():
             if a_name != 'back':
                 print(f'Your current assets are {asset_name}')
         elif liabilities:
-            l_name = input('Please enter the name of your liability: ')
-            if 'del' in l_name:
-                delete = l_name.find('l')
+            l_name = input('Please enter the name of your liability: ').lower()
+            if '(del)' in l_name:
+                delete = l_name.find(')')
                 try:
                     index = liability_name.index(l_name[delete+2:])
-                except ValueError:
+                except:
                     print('Liability not found. Please re-enter.')
                     continue
                 liability_name.pop(index)
@@ -450,7 +494,7 @@ def entry():
             else:
                 try:
                     l_value = float(input('Please enter the value of your liability: '))
-                except ValueError:
+                except:
                     print('Value was invalid. Terminated previously entered liability. Please re-enter.')
                     continue
                 if l_value < 0:
@@ -468,12 +512,12 @@ def entry():
             if l_name != 'back':    
                 print(f'Your current liabilities are {liability_name}')
         elif capital:
-            c_name = input('Please enter the name of your capital account: ')
-            if 'del' in c_name:
-                delete = c_name.find('l')
+            c_name = input('Please enter the name of your capital account: ').lower()
+            if '(del)' in c_name:
+                delete = c_name.find(')')
                 try:
                     index = capital_name.index(c_name[delete+2:])
-                except ValueError:
+                except:
                     print('Capital account not found. Please re-enter.')
                     continue
                 capital_name.pop(index)
@@ -482,10 +526,13 @@ def entry():
             elif c_name == 'back':
                 home = True
                 capital = False
+            elif 'capital' not in c_name:
+                print('Invalid capital account. Please re-enter')
+                continue
             else:
                 try:
                     c_value = float(input('Please enter the amount of capital for this account: '))
-                except ValueError:
+                except:
                     print('Value was invalid. Terminated previously entered capital account. Please re-enter.')
                     continue
                 if c_value < 0:
@@ -503,12 +550,12 @@ def entry():
             if c_name != 'back':
                 print(f'Your current capital accounts are {capital_name}')
         elif drawings:
-            d_name = input('Please enter the name of your drawings account: ')
-            if 'del' in d_name:
-                delete = d_name.find('l')
+            d_name = input('Please enter the name of your drawings account: ').lower()
+            if '(del)' in d_name:
+                delete = d_name.find(')')
                 try:
                     index = drawing_name.index(d_name[delete+2:])
-                except ValueError:
+                except:
                     print('Drawings account not found. Please re-enter.')
                     continue
                 drawing_name.pop(index)
@@ -517,10 +564,13 @@ def entry():
             elif d_name == 'back':
                 home = True
                 drawings = False
+            elif 'drawings' not in d_name:
+                print('Invalid drawings account. Please re-enter.')
+                continue
             else:
                 try:
                     d_value = float(input('Please enter the amount of drawings for this account: '))
-                except ValueError:
+                except:
                     print('Value was invalid. Terminated previously entered drawings account. Please re-enter.')
                     continue
                 if d_value < 0:
@@ -538,12 +588,12 @@ def entry():
             if d_name != 'back':
                 print(f'Your current drawings accounts are {drawing_name}')
         elif revenue:
-            r_name = input('Please enter the name of your revenue: ')
-            if 'del' in r_name:
-                delete = r_name.find('l')
+            r_name = input('Please enter the name of your revenue: ').lower()
+            if '(del)' in r_name:
+                delete = r_name.find(')')
                 try:
                     index = revenue_name.index(r_name[delete+2:])
-                except ValueError:
+                except:
                     print('Revenue account not found. Please re-enter.')
                     continue
                 revenue_name.pop(index)
@@ -555,7 +605,7 @@ def entry():
             else:
                 try:
                     r_value = float(input('Please enter the amount of revenue for this account: '))
-                except ValueError:
+                except:
                     print('Value was invalid. Terminated previously entered revenue account. Please re-enter.')
                     continue
                 if r_value < 0:
@@ -573,12 +623,12 @@ def entry():
             if r_name != 'back':
                 print(f'Your current revenue accounts are {revenue_name}')
         elif expenses:
-            e_name = input('Please enter the name of your expense: ')
-            if 'del' in e_name:
-                delete = e_name.find('l')
+            e_name = input('Please enter the name of your expense: ').lower()
+            if '(del)' in e_name:
+                delete = e_name.find(')')
                 try:
                     index = expense_name.index(e_name[delete+2:])
-                except ValueError:
+                except:
                     print('Expense not found. Please re-enter.')
                     continue
                 expense_name.pop(index)
@@ -590,7 +640,7 @@ def entry():
             else:
                 try:
                     e_value = float(input('Please enter the cost of the expense: '))
-                except ValueError:
+                except:
                     print('Value was invalid. Terminated previously entered expense. Please re-enter.')
                     continue
                 if e_value < 0:
