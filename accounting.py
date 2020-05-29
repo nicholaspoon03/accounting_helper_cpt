@@ -354,6 +354,87 @@ def liquidity_assets():
                 a_r_name.append(debtor)
             else:
                 a_r_name.append(n)
+    for n in range(len(a_r_name)):
+        if bank:
+            i = 1
+        else:
+            i = 0
+        asset_name.insert(i, a_r_name[n])
+        asset_value.insert(i, a_r_value[n])
+        asset_cr_dr.insert(i, a_r_dc[n])
+        i += 1
+
+
+def liquidity_liability():
+    global asset_name, asset_value, asset_cr_dr, a_r_dict, a_r_name, a_r_value, bank
+    global a_r_dc, a_r_value_dc, debtor_ppl
+    try:
+        i = asset_name.index('bank')
+        account_name = asset_name.pop(i)
+        account_value = asset_value.pop(i)
+        account_dr_cr = asset_cr_dr.pop(i)
+        asset_name.insert(0, account_name)
+        asset_value.insert(0, account_value)
+        asset_cr_dr.insert(0, account_dr_cr)
+        bank = True
+    except:
+        bank = False
+    asset_name_copy = asset_name
+    rem_times = 0
+    for n in range(len(asset_name)+rem_times):
+        if 'a/r' in asset_name[n-rem_times]:
+            a_r = asset_name[n-rem_times]
+            debtor = a_r[4:]
+            semi_colon = debtor.find(';')
+            if semi_colon == -1:
+                if debtor.find(' ') == -1:
+                    a_r_name.append(debtor.capitalize())
+                else:
+                    capitalize_list = debtor.split(' ')
+                    debtor = ''
+                    for i in range(len(capitalize_list)):
+                        debtor += capitalize_list[i].capitalize()
+                        if i != len(capitalize_list) - 1:
+                            debtor += ' '
+                    a_r_name.append(debtor)
+                    capitalize_list.clear()
+            else:
+                capitalize_list = debtor.split(';')
+                debtor = ''
+                for i in range(len(capitalize_list)):
+                    debtor += capitalize_list[i].capitalize()
+                    if i != len(capitalize_list) - 1:
+                        debtor += ' '
+                capitalize_list.clear()
+                a_r_name.append(debtor)
+                debtor_ppl.append(debtor)
+            asset_name.pop(n-rem_times)
+            a_r_value.append(asset_value[n-rem_times])
+            a_r_dc.append(asset_cr_dr[n-rem_times])
+            asset_value.pop(n-rem_times)
+            asset_cr_dr.pop(n-rem_times)
+            rem_times += 1
+    if len(a_r_name) != 0:
+        for n in range(len(a_r_name)):
+            a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
+        for n in a_r_name:
+            for x, y in a_r_value_dc:
+                a_r_dict[n] = [x, y]
+                a_r_value_dc.remove([x, y])
+                break
+        alphabetical_a_r = sorted(a_r_dict)
+        a_r_name.clear()
+        a_r_value.clear()
+        a_r_dc.clear()
+        for n in alphabetical_a_r:
+            a_r_value.append(a_r_dict[n][0])
+            a_r_dc.append(a_r_dict[n][1])
+            if n in debtor_ppl:
+                space = n.find(' ')
+                debtor = n[space+1:] + ' ' + n[:space]
+                a_r_name.append(debtor)
+            else:
+                a_r_name.append(n)
 
 
 def make_chart_of_accounts():
