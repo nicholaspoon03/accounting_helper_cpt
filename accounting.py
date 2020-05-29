@@ -33,6 +33,7 @@ asset_cr_dr = []
 a_r_name = []
 a_r_value = []
 a_r_dc = []
+debtor_ppl = []
 a_r_value_dc = []
 a_r_dict = {}
 bank = True
@@ -285,7 +286,7 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
 
 def liquidity():
     global asset_name, asset_value, asset_cr_dr, a_r_dict, a_r_name, a_r_value, bank
-    global a_r_dc, a_r_value_dc
+    global a_r_dc, a_r_value_dc, debtor_ppl
     try:
         i = asset_name.index('bank')
         account_name = asset_name.pop(i)
@@ -305,23 +306,24 @@ def liquidity():
             slash = debtor.find('/')
             if slash == -1:
                 if debtor.find(' ') == -1:
-                    a_r_name.append(capitalize(debtor))
+                    a_r_name.append(debtor.capitalize())
                 else:
                     capitalize_list = debtor.split(' ')
                     for i in range(len(capitalize_list)):
-                        debtor += capitalize(capitalize_list[n])
+                        debtor += capitalize_list[n].capitalize()
                         if n != len(capitalize_list) - 1:
                             debtor += ' '
+                    a_r_name.append(debtor)
                     capitalize_list.clear()
             else:
                 capitalize_list = debtor.split('/')
                 for i in range(len(capitalize_list)):
-                    debtor += capitalize[capitalize_list[n]]
+                    debtor += capitalize_list[n].capitalize()
                     if n != len(capitalize_list)-1:
                         debtor += ' '
                 capitalize_list.clear()
-                #debtor_name = debtor[slash+1:] + debtor[:slash]
-                a_r_name.append(debtor_name)
+                a_r_name.append(debtor)
+                debtor_ppl.append(debtor)
             asset_name.remove(asset_name[n])
             a_r_value.append(asset_value[n])
             a_r_dc.append(asset_cr_dr[n])
@@ -332,16 +334,26 @@ def liquidity():
             a_r_value_dc.append([a_r_value[n], a_r_dc[n]])
         for n in a_r_name:
             for x, y in a_r_value_dc:
-                a_r_value_dc[n] = x, y
+                a_r_dict[n] = x, y
                 a_r_value_dc.remove([x, y])
                 break
-        alphabetical_a_r = sorted(a_r_value_dc)
+        alphabetical_a_r = sorted(a_r_dict)
+        a_r_name.clear()
         a_r_value.clear()
         a_r_dc.clear()
         for n in alphabetical_a_r:
-            a_r_value.append(a_r_value_dc[n][0])
-            a_r_dc.append(a_r_value_dc[n][1])
-        #add name, values, and dr_cr back to respective asset lists
+            a_r_value.append(a_r_dict[n][0])
+            a_r_dc.append(a_r_dict[n][1])
+        for i, j in a_r_dict.items():
+            if i in debtor_ppl:
+                space = i.find(' ')
+                debtor = i[space+1:] + ' ' + i[:space]
+                a_r_name.append(debtor)
+            else:
+                a_r_name.append(i)
+    print(a_r_name)
+    print(a_r_value)
+    print(a_r_dc)
 
 
 def make_chart_of_accounts():
@@ -687,4 +699,5 @@ def entry():
 if __name__ == '__main__':
     entry()
     if entry_complete:
+        liquidity()
         setup()
