@@ -302,8 +302,23 @@ def liquidity_assets():
 
 
 def liquidity_liabilities():
+    global bank, liability_name, liability_value, liability_cr_dr
+    liability_liquidity = ['hst payable', 'hst recoverable', 'bank loan', 'mortgage']
     bank = True
     liquidity_ar_ap(liability_name, liability_value, liability_cr_dr, 'A/P')
+    for n in range(len(liability_liquidity)):
+        try:
+            i = liability_name.index(liability_liquidity[n])
+            account_name = liability_name.pop(i)
+            account_value = liability_value.pop(i)
+            account_dr_cr = liability_cr_dr.pop(i)
+            liability_name.insert(count, account_name)
+            liability_value.insert(count, account_value)
+            liability_cr_dr.insert(count, account_dr_cr)
+            count += 1
+        except:
+            pass
+
 
 
 def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text):
