@@ -287,16 +287,19 @@ def capitalize(acct_type_name):
     copy = acct_type_name.copy()
     acct_type_name.clear()
     for n in range(len(copy)):
-        if copy[n].find(' ') == -1:
-            acct_type_name.append(copy[n].capitalize())
+        if 'A/R' not in copy[n] and 'A/P' not in copy[n]:
+            if copy[n].find(' ') == -1:
+                acct_type_name.append(copy[n].capitalize())
+            else:
+                separate = copy[n].split(' ')
+                account = ''
+                for i in range(len(separate)):
+                    account += separate[i].capitalize()
+                    if i != len(separate) - 1:
+                        account += ' '
+                acct_type_name.append(account)
         else:
-            separate = copy[n].split(' ')
-            account = ''
-            for i in range(len(separate)):
-                account += separate[i].capitalize
-                if i != len(separate) - 1:
-                    account += ' '
-            acct_type_name.append(account)
+            acct_type_name.append(copy[n])
 
 
 def liquidity_assets():
@@ -312,7 +315,7 @@ def liquidity_assets():
         bank = True
     except:
         bank = False
-    liquidity_ar_ap(asset_name, asset_value, asset_cr_dr, 'A/R')
+    liquidity_ar_ap(asset_name, asset_value, asset_cr_dr, 'a/r', 'A/R')
     capitalize(asset_name)
 
 
@@ -320,7 +323,7 @@ def liquidity_liabilities():
     global bank, liability_name, liability_value, liability_cr_dr
     liability_liquidity = ['hst payable', 'hst recoverable', 'bank loan', 'mortgage']
     bank = True
-    liquidity_ar_ap(liability_name, liability_value, liability_cr_dr, 'A/P')
+    liquidity_ar_ap(liability_name, liability_value, liability_cr_dr, 'a/p', 'A/P')
     for n in range(len(liability_liquidity)):
         try:
             i = liability_name.index(liability_liquidity[n])
@@ -397,12 +400,12 @@ def sort_liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
         dc_ppl.clear()
 
 
-def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text):
+def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
     global a_r_p_dict, a_r_p_name, a_r_p_value
     global a_r_p_dc, a_r_p_2d, dc_ppl, count
     rem_times = 0
     for n in range(len(acct_t_name)+rem_times):
-        if 'a/r' in acct_t_name[n-rem_times]:
+        if text in acct_t_name[n-rem_times]:
             a_r = acct_t_name[n-rem_times]
             debtor = a_r[4:]
             semi_colon = debtor.find(';')
@@ -461,7 +464,7 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text):
         i = 0
     count = len(a_r_p_name)
     for n in range(count):
-        acct_t_name.insert(i, f'{text} {a_r_p_name[n]}')
+        acct_t_name.insert(i, f'{text2} {a_r_p_name[n]}')
         acct_t_value.insert(i, a_r_p_value[n])
         acct_t_dc.insert(i, a_r_p_dc[n])
         i += 1
@@ -681,7 +684,7 @@ def entry():
             elif c_name == 'back':
                 home = True
                 capital = False
-            elif 'capital' and ',' not in c_name:
+            elif ('capital' and ',' and ';') not in c_name:
                 print('Invalid capital account. Please re-enter')
                 continue
             else:
@@ -718,7 +721,7 @@ def entry():
             elif d_name == 'back':
                 home = True
                 drawings = False
-            elif 'drawings' and ',' not in d_name:
+            elif ('drawings' and ',' and ';') not in d_name:
                 print('Invalid drawings account. Please re-enter.')
                 continue
             else:
@@ -814,7 +817,7 @@ if __name__ == '__main__':
         liquidity_liabilities()
         liquidity_capital_drawings()
         capitalize(revenue_name)
-        capitalize(revenue_value)
+        capitalize(expense_name)
         print(asset_name, asset_value, asset_cr_dr)
         print(liability_name, liability_value, liability_cr_dr)
         print(capital_name, capital_value, capital_cr_dr)
