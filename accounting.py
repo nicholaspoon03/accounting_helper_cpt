@@ -83,8 +83,6 @@ def update(delta_time):
 
 
 def on_draw():
-    global home_page, chart_of_accounts, trial_balance, income_statement
-    global balance_sheet, interval_selection_done
     arcadeplus.start_render()
     # Draw in here...
     if home_page:
@@ -100,13 +98,6 @@ def on_draw():
         pass
     elif balance_sheet:
         pass
-    if main_menu:
-        home_page = True
-        interval_selection_done = False
-        chart_of_accounts = False
-        trial_balance = False
-        income_statement = False
-        balance_sheet = False
 
 
 def on_key_press(key, modifiers):
@@ -117,10 +108,16 @@ def on_key_press(key, modifiers):
 
 
 def on_key_release(key, modifiers):
-    global main_menu
+    global main_menu, home_page, chart_of_accounts
+    global trial_balance, income_statement, balance_sheet
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = False
+            home_page = True
+            chart_of_accounts = False
+            trial_balance = False
+            income_statement = False
+            balance_sheet = False
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -156,7 +153,8 @@ def home():
 
 
 def chart_of_accounts_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
-    global chart_of_accounts_press, home_page, chart_of_accounts
+    global chart_of_accounts_press, home_page, chart_of_accounts, interval_selection_done
+    global interval1, interval5
     left = centre_x - width/2
     right = centre_x + width/2
     top = centre_y + height/2
@@ -168,6 +166,9 @@ def chart_of_accounts_bttn(centre_x, centre_y, width, height, color_press, color
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
         if chart_of_accounts_press:
             chart_of_accounts_press = False
+            interval_selection_done = False
+            interval5 = False
+            interval1 = False
             chart_of_accounts = True
             home_page = False
     else:
