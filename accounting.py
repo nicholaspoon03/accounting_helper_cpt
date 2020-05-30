@@ -507,32 +507,38 @@ def make_chart_of_accounts():
         first_line_y = 660
         if assets:
             series = 100
-            make_chart_of_accounts_2(asset_name, assets, liabilities, series+(starting_num*acct_num))
+            make_chart_of_accounts_2(asset_name, assets, liabilities, series+(acct_num*starting_num))
         elif liabilities:
             series = 200
-            make_chart_of_accounts_2(liability_name, liabilities, capital, series+(starting_num*acct_num))
+            make_chart_of_accounts_2(liability_name, liabilities, capital, series+(acct_num*starting_num))
         elif capital:
             series = 300
-            pass
+            make_chart_of_accounts_2(capital_name, capital, drawings, series+(acct_num*starting_num))
         elif drawings:
-            series = 300
-            pass
+            make_chart_of_accounts_2(drawing_name, drawings, revenue, series+(acct_num*starting_num))
         elif revenue:
             series = 400
-            make_chart_of_accounts_2()
+            make_chart_of_accounts_2(revenue_name, revenue, expenses, series+(acct_num*starting_num))
         elif expenses:
             series = 500
+            make_chart_of_accounts_2(expense_name, expense, assets, series+(acct_num*starting_num))
         first_line_y -= 50
-        acct_num += starting_num
+        acct_num += 1
 
 
 def make_chart_of_accounts_2(acct_t_name, account, next_account, starting_num):
-    if acct_num >= len(acct_t_name) - 1:
-        acct_num = 0
+    if acct_t_name == capital and acct_num == len(capital_name):
         account = False
         next_account = True
-        continue
-    arcadeplus.draw_text(f'{starting_num+acct_num} {acct_t_name[n]}', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        skip = True
+    elif acct_num == len(acct_t_name) or len(acct_t_name) == 0:
+        acct_num = 1
+        account = False
+        next_account = True
+        skip = True
+    if not skip:
+        arcadeplus.draw_text(f'{starting_num+acct_num} {acct_t_name[n]}', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    skip = False
 
 
 def make_trial_balance():
