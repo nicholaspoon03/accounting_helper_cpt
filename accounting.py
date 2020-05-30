@@ -85,7 +85,7 @@ def update(delta_time):
 
 def on_draw():
     global home_page, chart_of_accounts, trial_balance, income_statement
-    global main_menu, balance_sheet, interval_selection_done
+    global balance_sheet, interval_selection_done
     arcadeplus.start_render()
     # Draw in here...
     if home_page:
@@ -111,14 +111,14 @@ def on_draw():
 
 
 def on_key_press(key, modifiers):
-    global main_menu, home_page
+    global main_menu
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
 
 
 def on_key_release(key, modifiers):
-    global main_menu, home_page
+    global main_menu
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = False
@@ -284,9 +284,24 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
         interval1 = False
 
 
+def capitalize(acct_type_name):
+    copy = acct_type_name
+    acct_type_name.clear()
+    for n in len(copy):
+        if copy[n].find(' ') == -1:
+            acct_type_name.append(copy[n].capitalize())
+        else:
+            split = copy[n].split(' ')
+            account = ''
+            for i in range(len(split)):
+                account += split[i].capitalize
+                if i != len(split) - 1:
+                    account += ' '
+            acct_type_name.append(account)
+
+
 def liquidity_assets():
-    global asset_name, asset_value, asset_cr_dr, a_r_dict, a_r_name, a_r_value, bank
-    global a_r_dc, a_r_value_dc, debtor_ppl
+    global asset_name, asset_value, asset_cr_dr, bank
     try:
         i = asset_name.index('bank')
         account_name = asset_name.pop(i)
@@ -299,6 +314,7 @@ def liquidity_assets():
     except:
         bank = False
     liquidity_ar_ap(asset_name, asset_value, asset_cr_dr, 'A/R')
+    capitalize(asset_name)
 
 
 def liquidity_liabilities():
@@ -318,7 +334,12 @@ def liquidity_liabilities():
             count += 1
         except:
             pass
+    capitalize(liability_name)
 
+
+def liquidity_capital():
+    global capital_name, capital_value, capital_cr_dr
+    
 
 
 def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text):
@@ -417,7 +438,7 @@ def entry():
     global entry_complete, asset_name, asset_value, asset_cr_dr, liability_name, liability_value
     global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
     global expense_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name, drawing_value
-    global drawing_cr_dr, name, month, day, year, f_period, month_days, month_list
+    global drawing_cr_dr, name, month, day, year, f_period
     home = True
     assets = False
     liabilities = False
@@ -741,4 +762,5 @@ if __name__ == '__main__':
     entry()
     if entry_complete:
         liquidity_assets()
+        liquidity_liabilities()
         setup()
