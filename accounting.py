@@ -22,7 +22,6 @@ interval1 = False
 interval_selection_done = False
 
 month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31, 'June': 30, 'July': 31, 'August': 31, 'September': 30, 'October': 31, 'November': 30, 'December': 31}
-#month_days = {31: ['January', 'March', 'May', 'July', 'August', 'October', 'December'], 30: {'April', 'June', 'September', 'November'}}
 month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 'August', 'September', 'October', 'November', 'December']
 
@@ -339,7 +338,87 @@ def liquidity_liabilities():
 
 def liquidity_capital():
     global capital_name, capital_value, capital_cr_dr
-    
+    pass
+
+
+def liquidity_drawings():
+    global drawing_name, drawing_value, drawing_cr_dr
+    pass
+
+
+def liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
+    global a_r_p_dict, a_r_p_name, a_r_p_value
+    global a_r_p_dc, a_r_p_2d, dc_ppl, count
+    rem_times = 0
+    for n in range(len(acct_t_name)+rem_times):
+        a_r = acct_t_name[n-rem_times]
+        debtor = a_r[4:]
+        semi_colon = debtor.find(';')
+        if semi_colon == -1:
+            if debtor.find(' ') == -1:
+                a_r_p_name.append(debtor.capitalize())
+            else:
+                capitalize_list = debtor.split(' ')
+                debtor = ''
+                for i in range(len(capitalize_list)):
+                    debtor += capitalize_list[i].capitalize()
+                    if i != len(capitalize_list) - 1:
+                        debtor += ' '
+                a_r_p_name.append(debtor)
+                capitalize_list.clear()
+        else:
+            capitalize_list = debtor.split(';')
+            debtor = ''
+            for i in range(len(capitalize_list)):
+                debtor += capitalize_list[i].capitalize()
+                if i != len(capitalize_list) - 1:
+                    debtor += ' '
+            capitalize_list.clear()
+            a_r_p_name.append(debtor)
+            dc_ppl.append(debtor)
+        acct_t_name.pop(n-rem_times)
+        a_r_p_value.append(acct_t_value[n-rem_times])
+        a_r_p_dc.append(acct_t_dc[n-rem_times])
+        acct_t_value.pop(n-rem_times)
+        acct_t_dc.pop(n-rem_times)
+        rem_times += 1
+    if len(a_r_p_name) != 0:
+        for n in range(len(a_r_p_name)):
+            a_r_p_2d.append([a_r_p_value[n], a_r_p_dc[n]])
+        for n in a_r_p_name:
+            for x, y in a_r_p_2d:
+                a_r_p_dict[n] = [x, y]
+                a_r_p_2d.remove([x, y])
+                break
+        alphabetical_a_r_p = sorted(a_r_p_dict)
+        a_r_p_name.clear()
+        a_r_p_value.clear()
+        a_r_p_dc.clear()
+        for n in alphabetical_a_r_p:
+            a_r_p_value.append(a_r_p_dict[n][0])
+            a_r_p_dc.append(a_r_p_dict[n][1])
+            if n in dc_ppl:
+                space = n.find(' ')
+                debtor = n[space+1:] + ' ' + n[:space]
+                a_r_p_name.append(debtor)
+            else:
+                a_r_p_name.append(n)
+    if bank:
+        i = 1
+    else:
+        i = 0
+    count = len(a_r_p_name)
+    for n in range(count):
+        acct_t_name.insert(i, f'{text} {a_r_p_name[n]}')
+        acct_t_value.insert(i, a_r_p_value[n])
+        acct_t_dc.insert(i, a_r_p_dc[n])
+        i += 1
+    a_r_p_dict.clear()
+    a_r_p_name.clear()
+    a_r_p_value.clear()
+    a_r_p_dc.clear()
+    a_r_p_2d.clear()
+    dc_ppl.clear()
 
 
 def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text):
@@ -526,13 +605,11 @@ def entry():
                 if error:
                     continue
                 f_period = input("Please enter 'year' or 'month' for the fiscal period: ").lower()
-                if f_period == 'year' or f_period == 'month':
-                    pass
-                elif f_period == 'back':
-                    continue
-                else:
+                if f_period != 'year' and f_period != 'month':
                     print('Not a valid input. Please re-enter information.')
                     error = True
+                    continue
+                elif f_period == 'back':
                     continue
                 entry_complete = True
                 break
@@ -600,9 +677,7 @@ def entry():
                     print('Value was invalid. Terminated previously entered liability. Please re-enter.')
                     continue
                 l_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
-                if l_cr_dr == 'dr' or l_cr_dr == 'cr':
-                    pass
-                else:
+                if l_cr_dr != 'dr' and l_cr_dr != 'cr':
                     print('Input was invalid. Terminated previously entered liability. Please re-enter.')
                     continue
                 liability_name.append(l_name)
@@ -639,9 +714,7 @@ def entry():
                     print('Value was invalid. Terminated previously entered capital account. Please re-enter.')
                     continue
                 c_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
-                if c_cr_dr == 'dr' or c_cr_dr == 'cr':
-                    pass
-                else:
+                if c_cr_dr != 'dr' and c_cr_dr != 'cr':
                     print('Input was invalid. Terminated previously entered capital account. Please re-enter.')
                     continue
                 capital_name.append(c_name)
@@ -678,9 +751,7 @@ def entry():
                     print('Value was invalid. Terminated previously entered drawings account. Please re-enter.')
                     continue
                 d_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
-                if d_cr_dr == 'dr' or d_cr_dr == 'cr':
-                    pass
-                else:
+                if d_cr_dr != 'dr' and d_cr_dr != 'cr':
                     print('Input was invalid. Terminated previously entered drawings account. Please re-enter.')
                     continue
                 drawing_name.append(d_name)
@@ -713,9 +784,7 @@ def entry():
                     print('Value was invalid. Terminated previously entered revenue account. Please re-enter.')
                     continue
                 r_cr_dr = input("Please enter 'dr' for a debit balance or 'cr' for a credit balance: ").lower()
-                if r_cr_dr == 'dr' or r_cr_dr == 'cr':
-                    pass
-                else:
+                if r_cr_dr != 'dr' and r_cr_dr != 'cr':
                     print('Input was invalid. Terminated previously entered revenue account. Please re-enter.')
                     continue
                 revenue_name.append(r_name)
