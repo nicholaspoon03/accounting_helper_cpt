@@ -478,7 +478,61 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 
 
 def make_chart_of_accounts():
+    global asset_name, liability_name, capital_name, assets, liabilities
+    global expense_name, revenue_name, drawing_name, capital, drawings
+    global revenue, expenses
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
+    # accts = [assets, liabilities, capital, revenue, expenses]
+    # acct_names = [asset_name, liability_name, capital_name, drawing_name, revenue_name, expense_name]
+    # account_exist = []
+    # for n in range(len(acct_names)):
+    #     if len(acct_names[n]) != 0:
+    #         account_exist.append(True)
+    #     else:
+    #         account_exist.append(False)
+    # try:
+    #     i = account_exist.index(True)
+    # except:
+    #     continue
+    # accts[i] = True
+    num_accounts = (len(asset_name) + len(liability_name) + len(capital_name) \
+                    + len(drawing_name) + len(revenue_name) + len(expense_name))
+    # arcadeplus.draw_text('Test', 10, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
+    if interval1:
+        starting_num = 1
+    else:
+        starting_num = 5
+    for n in range(num_accounts):
+        acct_num = 1
+        first_line_y = 660
+        if assets:
+            series = 100
+            make_chart_of_accounts_2(asset_name, assets, liabilities, series+(starting_num*acct_num))
+        elif liabilities:
+            series = 200
+            make_chart_of_accounts_2(liability_name, liabilities, capital, series+(starting_num*acct_num))
+        elif capital:
+            series = 300
+            pass
+        elif drawings:
+            series = 300
+            pass
+        elif revenue:
+            series = 400
+            make_chart_of_accounts_2()
+        elif expenses:
+            series = 500
+        first_line_y -= 50
+        acct_num += starting_num
+
+
+def make_chart_of_accounts_2(acct_t_name, account, next_account, starting_num):
+    if acct_num >= len(acct_t_name) - 1:
+        acct_num = 0
+        account = False
+        next_account = True
+        continue
+    arcadeplus.draw_text(f'{starting_num+acct_num} {acct_t_name[n]}', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
 
 
 def make_trial_balance():
@@ -497,7 +551,8 @@ def entry():
     global entry_complete, asset_name, asset_value, asset_cr_dr, liability_name, liability_value
     global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
     global expense_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name, drawing_value
-    global drawing_cr_dr, name, month, day, year, f_period
+    global drawing_cr_dr, name, month, day, year, f_period, assets, liabilities, capital, drawings
+    global revenue, expenses
     home = True
     assets = False
     liabilities = False
