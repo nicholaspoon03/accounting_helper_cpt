@@ -284,17 +284,17 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
 
 
 def capitalize(acct_type_name):
-    copy = acct_type_name
+    copy = acct_type_name.copy()
     acct_type_name.clear()
-    for n in len(copy):
+    for n in range(len(copy)):
         if copy[n].find(' ') == -1:
             acct_type_name.append(copy[n].capitalize())
         else:
-            split = copy[n].split(' ')
+            separate = copy[n].split(' ')
             account = ''
-            for i in range(len(split)):
-                account += split[i].capitalize
-                if i != len(split) - 1:
+            for i in range(len(separate)):
+                account += separate[i].capitalize
+                if i != len(separate) - 1:
                     account += ' '
             acct_type_name.append(account)
 
@@ -336,46 +336,30 @@ def liquidity_liabilities():
     capitalize(liability_name)
 
 
-def liquidity_capital():
+def liquidity_capital_drawings():
     global capital_name, capital_value, capital_cr_dr
-    pass
-
-
-def liquidity_drawings():
     global drawing_name, drawing_value, drawing_cr_dr
-    pass
+    sort_liquidity_cap_draw(capital_name, capital_value, capital_cr_dr, 'Capital')
+    sort_liquidity_cap_draw(drawing_name, drawing_value, drawing_cr_dr, 'Drawings')
 
 
-def liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
+def sort_liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
     global a_r_p_dict, a_r_p_name, a_r_p_value
-    global a_r_p_dc, a_r_p_2d, dc_ppl, count
+    global a_r_p_dc, a_r_p_2d, count
     rem_times = 0
     for n in range(len(acct_t_name)+rem_times):
         a_r = acct_t_name[n-rem_times]
         comma = a_r.rfind(',')
         debtor = a_r[:comma]
-        if semi_colon == -1:##change
-            if debtor.find(' ') == -1:
-                a_r_p_name.append(debtor.capitalize())
-            else:
-                capitalize_list = debtor.split(' ')
-                debtor = ''
-                for i in range(len(capitalize_list)):
-                    debtor += capitalize_list[i].capitalize()
-                    if i != len(capitalize_list) - 1:
-                        debtor += ' '
-                a_r_p_name.append(debtor)
-                capitalize_list.clear()
-        else:
-            capitalize_list = debtor.split(';')
-            debtor = ''
-            for i in range(len(capitalize_list)):
-                debtor += capitalize_list[i].capitalize()
-                if i != len(capitalize_list) - 1:
-                    debtor += ' '
-            capitalize_list.clear()
-            a_r_p_name.append(debtor)
-            dc_ppl.append(debtor)
+        semi_colon = debtor.find(';')
+        capitalize_list = debtor.split(';')
+        debtor = ''
+        for i in range(len(capitalize_list)):
+            debtor += capitalize_list[i].capitalize()
+            if i != len(capitalize_list) - 1:
+                debtor += ' '
+        capitalize_list.clear()
+        a_r_p_name.append(debtor)
         acct_t_name.pop(n-rem_times)
         a_r_p_value.append(acct_t_value[n-rem_times])
         a_r_p_dc.append(acct_t_dc[n-rem_times])
@@ -397,28 +381,20 @@ def liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
         for n in alphabetical_a_r_p:
             a_r_p_value.append(a_r_p_dict[n][0])
             a_r_p_dc.append(a_r_p_dict[n][1])
-            if n in dc_ppl:
-                space = n.find(' ')
-                debtor = n[space+1:] + ' ' + n[:space]
-                a_r_p_name.append(debtor)
-            else:
-                a_r_p_name.append(n)
-    if bank:
-        i = 1
-    else:
-        i = 0
-    count = len(a_r_p_name)
-    for n in range(count):
-        acct_t_name.insert(i, f'{text} {a_r_p_name[n]}')
-        acct_t_value.insert(i, a_r_p_value[n])
-        acct_t_dc.insert(i, a_r_p_dc[n])
-        i += 1
-    a_r_p_dict.clear()
-    a_r_p_name.clear()
-    a_r_p_value.clear()
-    a_r_p_dc.clear()
-    a_r_p_2d.clear()
-    dc_ppl.clear()
+            space = n.find(' ')
+            debtor = n[space+1:] + ' ' + n[:space]
+            a_r_p_name.append(debtor)
+        for n in range(len(a_r_p_name)):
+            acct_t_name.insert(i, f'{a_r_p_name[n]}, {text}')
+            acct_t_value.insert(i, a_r_p_value[n])
+            acct_t_dc.insert(i, a_r_p_dc[n])
+            i += 1
+        a_r_p_dict.clear()
+        a_r_p_name.clear()
+        a_r_p_value.clear()
+        a_r_p_dc.clear()
+        a_r_p_2d.clear()
+        dc_ppl.clear()
 
 
 def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text):
@@ -560,59 +536,63 @@ def entry():
                 expenses = True
                 home = False
             elif n == 'create':
-                print("Type 'back' at any point to go back to main menu or if you make a mistake in any of the following inputs.")
-                name = input('Please enter the name of your company: ')
-                if name == 'back':
+                if len(asset_name) != 0 and len(capital_name) == 0:
+                    print('Capital Account is required to start creating worksheets.')
                     continue
-                date = input('Please enter the date in the following format (mm/dd/yyyy): ')
-                if date == 'back':
-                    continue
-                try:
-                    month = int(date[:2])
-                    day = int(date[3:5])
-                    year = int(date[-4:])
-                except:
-                    print('Not a valid date. Please re-enter information.')
-                    error = True
-                if error:
-                    continue
-                if len(date) != 10:
-                    print('Not a valid date. Please re-enter information.')
-                    error = True
-                elif month < 0 or month > 12:
-                    print('Not a valid date. Please re-enter information.')
-                    error = True
-                elif year < 0:
-                    print('Not a valid date. Please re-enter information.')
-                    error = True
-                elif day < 0:
-                    print('Not a valid date. Please re-enter information.')
-                    error = True
                 else:
-                    month = month_list[int(date[:2])-1]
-                    if month == 'February':
-                        if year % 4 == 0:
-                            if day > 29:
-                                print('Not a valid date. Please re-enter information')
-                                error = True
-                        else:
-                            if day > 28:
-                                print('Not a valid date. Please re-enter information')
-                                error = True
-                    elif day > month_days[month]:
-                        print('Not a valid date. Please re-enter information')
+                    print("Type 'back' at any point to go back to main menu or if you make a mistake in any of the following inputs.")
+                    name = input('Please enter the name of your company: ')
+                    if name == 'back':
+                        continue
+                    date = input('Please enter the date in the following format (mm/dd/yyyy): ')
+                    if date == 'back':
+                        continue
+                    try:
+                        month = int(date[:2])
+                        day = int(date[3:5])
+                        year = int(date[-4:])
+                    except:
+                        print('Not a valid date. Please re-enter information.')
                         error = True
-                if error:
-                    continue
-                f_period = input("Please enter 'year' or 'month' for the fiscal period: ").lower()
-                if f_period != 'year' and f_period != 'month':
-                    print('Not a valid input. Please re-enter information.')
-                    error = True
-                    continue
-                elif f_period == 'back':
-                    continue
-                entry_complete = True
-                break
+                    if error:
+                        continue
+                    if len(date) != 10:
+                        print('Not a valid date. Please re-enter information.')
+                        error = True
+                    elif month < 0 or month > 12:
+                        print('Not a valid date. Please re-enter information.')
+                        error = True
+                    elif year < 0:
+                        print('Not a valid date. Please re-enter information.')
+                        error = True
+                    elif day < 0:
+                        print('Not a valid date. Please re-enter information.')
+                        error = True
+                    else:
+                        month = month_list[int(date[:2])-1]
+                        if month == 'February':
+                            if year % 4 == 0:
+                                if day > 29:
+                                    print('Not a valid date. Please re-enter information')
+                                    error = True
+                            else:
+                                if day > 28:
+                                    print('Not a valid date. Please re-enter information')
+                                    error = True
+                        elif day > month_days[month]:
+                            print('Not a valid date. Please re-enter information')
+                            error = True
+                    if error:
+                        continue
+                    f_period = input("Please enter 'year' or 'month' for the fiscal period: ").lower()
+                    if f_period != 'year' and f_period != 'month':
+                        print('Not a valid input. Please re-enter information.')
+                        error = True
+                        continue
+                    elif f_period == 'back':
+                        continue
+                    entry_complete = True
+                    break
             else:
                 print('Please enter a valid input')
         elif assets:
@@ -686,7 +666,7 @@ def entry():
             if l_name != 'back':    
                 print(f'Your current liabilities are {liability_name}')
         elif capital:
-            print("Note: Please enter capital accounts in the following format: 'firstname lastname, capital' or 'firstinitial. lastname, capital")
+            print("Note: Please enter capital accounts in the following format: 'lastname;firstname, capital' or 'lastname;firstinitial., capital")
             c_name = input('Please enter the name of your capital account: ').lower()
             if '(del)' in c_name:
                 delete = c_name.find(')')
@@ -723,7 +703,7 @@ def entry():
             if c_name != 'back':
                 print(f'Your current capital accounts are {capital_name}')
         elif drawings:
-            print("Note: Please enter drawings accounts in the following format: 'firstname lastname, drawings' or 'firstinitial. lastname, capital")
+            print("Note: Please enter drawings accounts in the following format: 'lastname;firstname, drawings' or 'lastname;firstname, drawings")
             d_name = input('Please enter the name of your drawings account: ').lower()
             if '(del)' in d_name:
                 delete = d_name.find(')')
@@ -832,4 +812,13 @@ if __name__ == '__main__':
     if entry_complete:
         liquidity_assets()
         liquidity_liabilities()
+        liquidity_capital_drawings()
+        capitalize(revenue_name)
+        capitalize(revenue_value)
+        print(asset_name, asset_value, asset_cr_dr)
+        print(liability_name, liability_value, liability_cr_dr)
+        print(capital_name, capital_value, capital_cr_dr)
+        print(drawing_name, drawing_value, drawing_cr_dr)
+        print(revenue_name, revenue_value, revenue_cr_dr)
+        print(expense_name, expense_value, expense_cr_dr)
         setup()
