@@ -352,9 +352,9 @@ def liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
     rem_times = 0
     for n in range(len(acct_t_name)+rem_times):
         a_r = acct_t_name[n-rem_times]
-        debtor = a_r[4:]
-        semi_colon = debtor.find(';')
-        if semi_colon == -1:
+        comma = a_r.rfind(',')
+        debtor = a_r[:comma]
+        if semi_colon == -1:##change
             if debtor.find(' ') == -1:
                 a_r_p_name.append(debtor.capitalize())
             else:
@@ -701,7 +701,7 @@ def entry():
             elif c_name == 'back':
                 home = True
                 capital = False
-            elif 'capital' not in c_name:
+            elif 'capital' and ',' not in c_name:
                 print('Invalid capital account. Please re-enter')
                 continue
             else:
@@ -738,7 +738,7 @@ def entry():
             elif d_name == 'back':
                 home = True
                 drawings = False
-            elif 'drawings' not in d_name:
+            elif 'drawings' and ',' not in d_name:
                 print('Invalid drawings account. Please re-enter.')
                 continue
             else:
