@@ -3,6 +3,11 @@ import arcadeplus
 WIDTH = 1000
 HEIGHT = 690
 
+_left = 0
+_right = WIDTH
+_bottom = 0
+_top = HEIGHT
+
 home_page = True
 chart_of_accounts = False
 trial_balance = False
@@ -74,6 +79,7 @@ def setup():
     window.on_mouse_press = on_mouse_press
     window.on_mouse_release = on_mouse_release
     window.on_mouse_motion = on_mouse_motion
+    window.set_viewport = set_viewport
 
     arcadeplus.run()
 
@@ -101,15 +107,21 @@ def on_draw():
 
 
 def on_key_press(key, modifiers):
-    global main_menu
+    global main_menu, scroll_down, scroll_up
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
+    if not home_page and interval_selection_page:
+        if key == arcadeplus.key.DOWN:
+            scroll_down = True
+        if key == arcadeplus.key.UP:
+            scroll_up = True
 
 
 def on_key_release(key, modifiers):
     global main_menu, home_page, chart_of_accounts
     global trial_balance, income_statement, balance_sheet
+    global scroll_up, scroll_down
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = False
@@ -118,6 +130,11 @@ def on_key_release(key, modifiers):
             trial_balance = False
             income_statement = False
             balance_sheet = False
+    if not home_page and interval_selection_page:
+        if key == arcadeplus.key.DOWN:
+            scroll_down = False
+        if key == arcadeplus.key.UP:
+            scroll_up = False
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -136,6 +153,14 @@ def on_mouse_motion(x, y, dx, dy):
     global mouse_x, mouse_y
     mouse_x = x
     mouse_y = y
+
+
+def set_viewport(left, right, bottom, top):
+    global _left, _right, _bottom, _top
+    _left = left
+    _right = right
+    _bottom = bottom
+    _top = top
 
 
 def home():
@@ -237,6 +262,8 @@ def balance_sheet_bttn(centre_x, centre_y, width, height, color_press, color_hov
 
 
 def interval_selection():
+    global interval_selection_page
+    interval_selection_page = True
     arcadeplus.set_background_color(arcadeplus.color.DARK_BLUE_GRAY)
     arcadeplus.draw_text('Select the interval in which you want your account numbers to go up by.', 70, 530, arcadeplus.color.WHITE, 24, font_name='calibri')
     account_interval1(WIDTH/2, 390, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
@@ -246,7 +273,7 @@ def interval_selection():
 
 
 def account_interval5(centre_x, centre_y, width, height, color_press, color_hover, color_default):
-    global interval5, interval_selection_done
+    global interval5, interval_selection_done, interval_selection_page
     if not interval_selection_done:
         left = centre_x - width/2
         right = centre_x + width/2
@@ -259,14 +286,16 @@ def account_interval5(centre_x, centre_y, width, height, color_press, color_hove
             arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
             if interval5:
                 interval_selection_done = True
+                interval_selection_page = False
         else:
             arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
             interval_selection_done = False
             interval5 = False
+            interval_selection_page = False
 
 
 def account_interval1(centre_x, centre_y, width, height, color_press, color_hover, color_default):
-    global interval1, interval_selection_done
+    global interval1, interval_selection_done, interval_selection_page
     left = centre_x - width/2
     right = centre_x + width/2
     top = centre_y + height/2
@@ -278,10 +307,12 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
         if interval1:
             interval_selection_done = True
+            interval_selection_page = False
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
         interval_selection_done = False
         interval1 = False
+        interval_selection_page = False
 
 
 def capitalize(acct_type_name):
@@ -481,22 +512,6 @@ def make_chart_of_accounts():
     global asset_name, liability_name, capital_name, first_line_y
     global expense_name, revenue_name, drawing_name
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
-    # accts = [assets, liabilities, capital, revenue, expenses]
-    # acct_names = [asset_name, liability_name, capital_name, drawing_name, revenue_name, expense_name]
-    # account_exist = []
-    # for n in range(len(acct_names)):
-    #     if len(acct_names[n]) != 0:
-    #         account_exist.append(True)
-    #     else:
-    #         account_exist.append(False)
-    # try:
-    #     i = account_exist.index(True)
-    # except:
-    #     continue
-    # accts[i] = True
-    # num_accounts = (len(asset_name) + len(liability_name) + len(capital_name) \
-    #                 + len(drawing_name) + len(revenue_name) + len(expense_name))
-    # arcadeplus.draw_text('Test', 10, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
     if interval1:
         starting_num = 1
     else:
