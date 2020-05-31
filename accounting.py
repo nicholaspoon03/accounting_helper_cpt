@@ -478,9 +478,8 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 
 
 def make_chart_of_accounts():
-    global asset_name, liability_name, capital_name, assets, liabilities
-    global expense_name, revenue_name, drawing_name, capital, drawings
-    global revenue, expenses
+    global asset_name, liability_name, capital_name, first_line_y
+    global expense_name, revenue_name, drawing_name
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     # accts = [assets, liabilities, capital, revenue, expenses]
     # acct_names = [asset_name, liability_name, capital_name, drawing_name, revenue_name, expense_name]
@@ -495,50 +494,32 @@ def make_chart_of_accounts():
     # except:
     #     continue
     # accts[i] = True
-    num_accounts = (len(asset_name) + len(liability_name) + len(capital_name) \
-                    + len(drawing_name) + len(revenue_name) + len(expense_name))
+    # num_accounts = (len(asset_name) + len(liability_name) + len(capital_name) \
+    #                 + len(drawing_name) + len(revenue_name) + len(expense_name))
     # arcadeplus.draw_text('Test', 10, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
     if interval1:
         starting_num = 1
     else:
         starting_num = 5
-    for n in range(num_accounts):
+    first_line_y = 660
+    make_chart_of_accounts_2(asset_name, 100, starting_num)
+    make_chart_of_accounts_2(liability_name, 200, starting_num)
+    make_chart_of_accounts_2(capital_name, 300, starting_num)
+    make_chart_of_accounts_2(drawing_name, 300, starting_num)
+    make_chart_of_accounts_2(revenue_name, 400, starting_num)
+    make_chart_of_accounts_2(expense_name, 500, starting_num)
+
+
+def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
+    global first_line_y, acct_num
+    if acct_t_name != drawing_name:
         acct_num = 1
-        first_line_y = 660
-        if assets:
-            series = 100
-            make_chart_of_accounts_2(asset_name, assets, liabilities, series+(acct_num*starting_num))
-        elif liabilities:
-            series = 200
-            make_chart_of_accounts_2(liability_name, liabilities, capital, series+(acct_num*starting_num))
-        elif capital:
-            series = 300
-            make_chart_of_accounts_2(capital_name, capital, drawings, series+(acct_num*starting_num))
-        elif drawings:
-            make_chart_of_accounts_2(drawing_name, drawings, revenue, series+(acct_num*starting_num))
-        elif revenue:
-            series = 400
-            make_chart_of_accounts_2(revenue_name, revenue, expenses, series+(acct_num*starting_num))
-        elif expenses:
-            series = 500
-            make_chart_of_accounts_2(expense_name, expense, assets, series+(acct_num*starting_num))
-        first_line_y -= 50
+    for n in range(len(acct_t_name)):
+        arcadeplus.draw_text(f'{series_num+(acct_num*starting_num)} {acct_t_name[n]}', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        first_line_y -= 25
         acct_num += 1
-
-
-def make_chart_of_accounts_2(acct_t_name, account, next_account, starting_num):
-    if acct_t_name == capital and acct_num == len(capital_name):
-        account = False
-        next_account = True
-        skip = True
-    elif acct_num == len(acct_t_name) or len(acct_t_name) == 0:
-        acct_num = 1
-        account = False
-        next_account = True
-        skip = True
-    if not skip:
-        arcadeplus.draw_text(f'{starting_num+acct_num} {acct_t_name[n]}', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    skip = False
+        if n == len(acct_t_name) - 1 and acct_t_name != capital_name:
+            first_line_y -= 25
 
 
 def make_trial_balance():
@@ -747,7 +728,7 @@ def entry():
             elif c_name == 'back':
                 home = True
                 capital = False
-            elif ('capital' and ',' and ';') not in c_name:
+            elif 'capital' not in c_name or ',' not in c_name or ';' not in c_name:
                 print('Invalid capital account. Please re-enter')
                 continue
             else:
@@ -784,7 +765,7 @@ def entry():
             elif d_name == 'back':
                 home = True
                 drawings = False
-            elif ('drawings' and ',' and ';') not in d_name:
+            elif 'drawings' not in d_name or ',' not in d_name or ';' not in d_name:
                 print('Invalid drawings account. Please re-enter.')
                 continue
             else:
