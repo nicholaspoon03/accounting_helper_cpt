@@ -8,12 +8,14 @@ _right = WIDTH
 _bottom = 0
 _top = HEIGHT
 
+scroll_down = False
+scroll_up = False
+
 home_page = True
 chart_of_accounts = False
 trial_balance = False
 balance_sheet = False
 income_statement = False
-entry_complete = False
 main_menu = False
 
 home_page_press = False
@@ -99,7 +101,7 @@ def on_draw():
         else:
             interval_selection()
     elif trial_balance:
-        pass
+        make_trial_balance()
     elif income_statement:
         pass
     elif balance_sheet:
@@ -511,6 +513,7 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 def make_chart_of_accounts():
     global asset_name, liability_name, capital_name, first_line_y
     global expense_name, revenue_name, drawing_name
+    arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if interval1:
         starting_num = 1
@@ -538,7 +541,42 @@ def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
 
 
 def make_trial_balance():
-    pass
+    global asset_name, asset_value, asset_cr_dr, liability_name, liability_value
+    global liability_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name
+    global drawing_value, drawing_cr_dr, revenue_name, revenue_value, revenue_cr_dr
+    global expense_name, expense_value, expense_cr_dr, name, month, day, year
+    arcadeplus.set_background_color(arcadeplus.color.WHITE)
+    date = f'{month} {day}, {year}'
+    worksheet = 'Trial Balance'
+    longest_list = [name, worksheet, date]
+    longest = max(longest_list, key=len)
+    index = longest_list.index(longest)
+    for n in range(len(longest_list)):
+        difference = len(longest) - len(longest_list[n])
+        if difference >= 3:
+            if n == 0:
+                name = name.center(difference)
+            elif n == 1:
+                worksheet = worksheet.center(difference)
+            else:
+                date = date.center(difference)
+    arcadeplus.draw_text(name, 400, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
+    first_line_y = 585
+    make_trial_balance_2(asset_name, 10)
+    make_trial_balance_2(liability_name, 10)
+    make_trial_balance_2(capital_name, 10)
+    make_trial_balance_2(drawing_name, 10)
+    make_trial_balance_2(revenue_name, 10)
+    make_trial_balance_2(expense_name, 10)
+
+
+def make_trial_balance_2(acct_t_name, x):
+    global first_line_y
+    for n in range(len(acct_t_name)):
+        arcadeplus.draw_text(acct_t_name[n], x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        first_line_y -= 25
 
 
 def make_income_statement():
@@ -550,11 +588,11 @@ def make_balance_sheet():
 
 
 def entry():
-    global entry_complete, asset_name, asset_value, asset_cr_dr, liability_name, liability_value
+    global asset_name, asset_value, asset_cr_dr, liability_name, liability_value
     global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
     global expense_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name, drawing_value
     global drawing_cr_dr, name, month, day, year, f_period, assets, liabilities, capital, drawings
-    global revenue, expenses
+    global revenue, expenses, currency_pos, currency
     home = True
     assets = False
     liabilities = False
@@ -567,7 +605,7 @@ def entry():
     print("This app allows you to make a chart of accounts, trial balance, income statement, and balance sheet with a\nsimple input of your assets, liabilities, and owner's equity.\n")
     print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
     print('Please type any names in the following format: lastname;firstname unless otherwise stated\n')
-    print('NOTE: PLEASE DO NOT INCLUDE CURRENCY SIGNS when entering the value')
+    print("NOTE: PLEASE DO NOT INCLUDE CURRENCY SIGNS when entering the value. You can set the default currency sign by typing 'currency'") #need to add
     print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type '(del) account name' but replace 'account name' with the account name.")
     print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only\ndelete assets when you are in the assets menu.\n')
     print("Type 'back' to go back to the main menu to enter another type of account.\n")
@@ -648,12 +686,24 @@ def entry():
                         continue
                     f_period = input("Please enter 'year' or 'month' for the fiscal period: ").lower()
                     if f_period != 'year' and f_period != 'month':
-                        print('Not a valid input. Please re-enter information.')
+                        print('Not a valid input. Please re-enter information')
+                        error = True
+                        continue
+                    currency = input('Please enter the currency in which you want to usen\Leaving this blank defaults to $: ')
+                    try:
+                        check_currency = int(currency)
+                        print('Not a valid currency. Please re-enter information')
+                        error = True
+                        continue
+                    except:
+                        pass
+                    currency_pos = input("Does the currency go before or after the money value?n\Enter 'before' or 'after'. Leaving this blank defaults to before: ")
+                    if currency_pos != 'before' and currency_pos != 'after' and currency_pos != '':
+                        print('Not a valid input. Please re-enter information')
                         error = True
                         continue
                     elif f_period == 'back':
                         continue
-                    entry_complete = True
                     break
             else:
                 print('Please enter a valid input')
@@ -871,10 +921,9 @@ def entry():
 
 if __name__ == '__main__':
     entry()
-    if entry_complete:
-        liquidity_assets()
-        liquidity_liabilities()
-        liquidity_capital_drawings()
-        capitalize(revenue_name)
-        capitalize(expense_name)
-        setup()
+    liquidity_assets()
+    liquidity_liabilities()
+    liquidity_capital_drawings()
+    capitalize(revenue_name)
+    capitalize(expense_name)
+    setup()
