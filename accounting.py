@@ -27,6 +27,7 @@ income_statement_press = False
 interval5 = False
 interval1 = False
 interval_selection_done = False
+interval_selection_page = False
 
 month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31, 'June': 30, 'July': 31, 'August': 31, 'September': 30, 'October': 31, 'November': 30, 'December': 31}
 month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -109,7 +110,7 @@ def on_draw():
 
 
 def on_key_press(key, modifiers):
-    global main_menu, scroll_down, scroll_up
+    global main_menu, scroll_down, scroll_up, interval_selection_page
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
@@ -123,7 +124,7 @@ def on_key_press(key, modifiers):
 def on_key_release(key, modifiers):
     global main_menu, home_page, chart_of_accounts
     global trial_balance, income_statement, balance_sheet
-    global scroll_up, scroll_down
+    global scroll_up, scroll_down, interval_selection_page
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = False
@@ -293,7 +294,7 @@ def account_interval5(centre_x, centre_y, width, height, color_press, color_hove
             arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
             interval_selection_done = False
             interval5 = False
-            interval_selection_page = False
+            interval_selection_page = True
 
 
 def account_interval1(centre_x, centre_y, width, height, color_press, color_hover, color_default):
@@ -314,7 +315,7 @@ def account_interval1(centre_x, centre_y, width, height, color_press, color_hove
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
         interval_selection_done = False
         interval1 = False
-        interval_selection_page = False
+        interval_selection_page = True
 
 
 def capitalize(acct_type_name):
@@ -354,9 +355,9 @@ def liquidity_assets():
 
 
 def liquidity_liabilities():
-    global bank, liability_name, liability_value, liability_cr_dr
+    global bank, liability_name, liability_value, liability_cr_dr, count
     liability_liquidity = ['hst payable', 'hst recoverable', 'bank loan', 'mortgage']
-    bank = True
+    bank = False
     liquidity_ar_ap(liability_name, liability_value, liability_cr_dr, 'a/p', 'A/P')
     for n in range(len(liability_liquidity)):
         try:
@@ -382,7 +383,7 @@ def liquidity_capital_drawings():
 
 def sort_liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
     global a_r_p_dict, a_r_p_name, a_r_p_value
-    global a_r_p_dc, a_r_p_2d, count
+    global a_r_p_dc, a_r_p_2d
     rem_times = 0
     for n in range(len(acct_t_name)+rem_times):
         a_r = acct_t_name[n-rem_times]
@@ -544,7 +545,7 @@ def make_trial_balance():
     global asset_name, asset_value, asset_cr_dr, liability_name, liability_value
     global liability_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name
     global drawing_value, drawing_cr_dr, revenue_name, revenue_value, revenue_cr_dr
-    global expense_name, expense_value, expense_cr_dr, name, month, day, year
+    global expense_name, expense_value, expense_cr_dr, name, month, day, year, first_line_y
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
@@ -563,20 +564,48 @@ def make_trial_balance():
     arcadeplus.draw_text(name, 400, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
-    first_line_y = 585
-    make_trial_balance_2(asset_name, 10)
-    make_trial_balance_2(liability_name, 10)
-    make_trial_balance_2(capital_name, 10)
-    make_trial_balance_2(drawing_name, 10)
-    make_trial_balance_2(revenue_name, 10)
-    make_trial_balance_2(expense_name, 10)
+    first_line_y = 573
+    make_trial_balance_2(asset_name, asset_value, asset_cr_dr)
+    make_trial_balance_2(liability_name, liability_value, liability_cr_dr)
+    make_trial_balance_2(capital_name, capital_value, capital_cr_dr)
+    make_trial_balance_2(drawing_name, drawing_value, drawing_cr_dr)
+    make_trial_balance_2(revenue_name, revenue_value, revenue_cr_dr)
+    make_trial_balance_2(expense_name, expense_value, expense_cr_dr)
 
 
-def make_trial_balance_2(acct_t_name, x):
-    global first_line_y
+def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
+    global first_line_y, currency_pos, currency
+    copy_values = acct_t_value.copy()
+    debit_count = 0
+    credit_count = 0
     for n in range(len(acct_t_name)):
-        arcadeplus.draw_text(acct_t_name[n], x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(acct_t_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        if acct_t_cr_dr[n] == 'dr':
+            x = 410
+            if debit_count == 0:
+                if currency_pos == 'before':
+                    copy_values[n] = currency + str(copy_values[n])
+                    x = 400
+                elif currency_pos == 'after':
+                    copy_values[n] = str(copy_values[n]) + currency
+                debit_count += 1
+            arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        else:
+            x = 610
+            if credit_count == 0:
+                if currency_pos == 'before':
+                    copy_values[n] = currency + str(copy_values[n])
+                    x = 600
+                elif currency_pos == 'after':
+                    copy_values[n] = str(copy_values[n]) + currency
+                credit_count += 1
+            arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         first_line_y -= 25
+
+
+def add_currency(column, acct_t_value, index):
+    global currency_pos
+    
 
 
 def make_income_statement():
@@ -685,24 +714,30 @@ def entry():
                     if error:
                         continue
                     f_period = input("Please enter 'year' or 'month' for the fiscal period: ").lower()
+                    if f_period == 'back':
+                        continue
                     if f_period != 'year' and f_period != 'month':
                         print('Not a valid input. Please re-enter information')
                         error = True
                         continue
-                    currency = input('Please enter the currency in which you want to usen\Leaving this blank defaults to $: ')
-                    try:
-                        check_currency = int(currency)
-                        print('Not a valid currency. Please re-enter information')
-                        error = True
+                    currency = input('Please enter the currency in which you want to use.\nLeaving this blank defaults to $: ')
+                    if currency == 'back':
                         continue
-                    except:
-                        pass
-                    currency_pos = input("Does the currency go before or after the money value?n\Enter 'before' or 'after'. Leaving this blank defaults to before: ")
+                    if currency != '':
+                        try:
+                            check_currency = int(currency)
+                            if len(currency) > 1:
+                                print('Not a valid currency. Please re-enter information')
+                                error = True
+                                continue
+                        except:
+                            pass
+                    currency_pos = input("Does the currency go before or after the money value?\nEnter 'before' or 'after'. Leaving this blank defaults to before: ")
+                    if currency_pos == 'back':
+                        continue
                     if currency_pos != 'before' and currency_pos != 'after' and currency_pos != '':
                         print('Not a valid input. Please re-enter information')
                         error = True
-                        continue
-                    elif f_period == 'back':
                         continue
                     break
             else:
