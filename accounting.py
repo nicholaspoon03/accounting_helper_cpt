@@ -546,35 +546,35 @@ def make_trial_balance():
     global liability_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name
     global drawing_value, drawing_cr_dr, revenue_name, revenue_value, revenue_cr_dr
     global expense_name, expense_value, expense_cr_dr, name, month, day, year, first_line_y
+    global total_credits, total_debits
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
-    longest_list = [name, worksheet, date]
-    longest = max(longest_list, key=len)
-    index = longest_list.index(longest)
-    for n in range(len(longest_list)):
-        difference = len(longest) - len(longest_list[n])
-        if difference >= 3:
-            if n == 0:
-                name = name.center(difference)
-            elif n == 1:
-                worksheet = worksheet.center(difference)
-            else:
-                date = date.center(difference)
     arcadeplus.draw_text(name, 400, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y = 573
+    total_debits = 0
+    total_credits = 0
     make_trial_balance_2(asset_name, asset_value, asset_cr_dr)
     make_trial_balance_2(liability_name, liability_value, liability_cr_dr)
     make_trial_balance_2(capital_name, capital_value, capital_cr_dr)
     make_trial_balance_2(drawing_name, drawing_value, drawing_cr_dr)
     make_trial_balance_2(revenue_name, revenue_value, revenue_cr_dr)
     make_trial_balance_2(expense_name, expense_value, expense_cr_dr)
+    arcadeplus.draw_line(355, first_line_y, 500, first_line_y, arcadeplus.color.BLACK)
+    arcadeplus.draw_line(555, first_line_y, 700, first_line_y, arcadeplus.color.BLACK)
+    arcadeplus.draw_text('$'+str(total_debits), 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text('$'+str(total_credits), 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_line(355, first_line_y-50, 500, first_line_y-50, arcadeplus.color.BLACK)
+    arcadeplus.draw_line(355, first_line_y-60, 500, first_line_y-60, arcadeplus.color.BLACK)
+    arcadeplus.draw_line(555, first_line_y-50, 700, first_line_y-50, arcadeplus.color.BLACK)
+    arcadeplus.draw_line(555, first_line_y-60, 700, first_line_y-60, arcadeplus.color.BLACK)
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
     global first_line_y, currency_pos, currency
+    global total_debits, total_credits
     copy_values = acct_t_value.copy()
     debit_count = 0
     credit_count = 0
@@ -590,6 +590,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
                     copy_values[n] = str(copy_values[n]) + currency
                 debit_count += 1
             arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            total_debits += acct_t_value[n]
         else:
             x = 610
             if credit_count == 0:
@@ -600,6 +601,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
                     copy_values[n] = str(copy_values[n]) + currency
                 credit_count += 1
             arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            total_credits += acct_t_value[n]
         first_line_y -= 25
 
 
