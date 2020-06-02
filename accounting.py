@@ -550,7 +550,7 @@ def make_trial_balance():
     global liability_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name
     global drawing_value, drawing_cr_dr, revenue_name, revenue_value, revenue_cr_dr
     global expense_name, expense_value, expense_cr_dr, name, month, day, year, first_line_y
-    global total_credits, total_debits
+    global total_credits, total_debits, currency, currency_pos
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
@@ -568,12 +568,16 @@ def make_trial_balance():
     make_trial_balance_2(expense_name, expense_value, expense_cr_dr)
     arcadeplus.draw_line(355, first_line_y, 500, first_line_y, arcadeplus.color.BLACK)
     arcadeplus.draw_line(555, first_line_y, 700, first_line_y, arcadeplus.color.BLACK)
-    arcadeplus.draw_text('$'+str(total_debits), 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_text('$'+str(total_credits), 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_line(355, first_line_y-50, 500, first_line_y-50, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(355, first_line_y-60, 500, first_line_y-60, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(555, first_line_y-50, 700, first_line_y-50, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(555, first_line_y-60, 700, first_line_y-60, arcadeplus.color.BLACK)
+    if currency_pos == 'before':
+        arcadeplus.draw_text(currency+str(total_debits), 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(currency+str(total_credits), 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+    else:
+        arcadeplus.draw_text(str(total_debits)+currency, 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(str(total_credits)+currency, 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_line(355, first_line_y-30, 500, first_line_y-30, arcadeplus.color.BLACK)
+    arcadeplus.draw_line(355, first_line_y-35, 500, first_line_y-35, arcadeplus.color.BLACK)
+    arcadeplus.draw_line(555, first_line_y-30, 700, first_line_y-30, arcadeplus.color.BLACK)
+    arcadeplus.draw_line(555, first_line_y-35, 700, first_line_y-35, arcadeplus.color.BLACK)
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
@@ -590,7 +594,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
                 if currency_pos == 'before':
                     copy_values[n] = currency + str(copy_values[n])
                     x = 400
-                elif currency_pos == 'after':
+                else:
                     copy_values[n] = str(copy_values[n]) + currency
                 debit_count += 1
             arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -601,7 +605,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
                 if currency_pos == 'before':
                     copy_values[n] = currency + str(copy_values[n])
                     x = 600
-                elif currency_pos == 'after':
+                else:
                     copy_values[n] = str(copy_values[n]) + currency
                 credit_count += 1
             arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -610,7 +614,19 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
 
 
 def make_income_statement():
-    pass
+    global revenue_name, revenue_cr_dr, revenue_value, name
+    global expense_name, expense_value, expense_cr_dr, day
+    global year, f_period, currency, currency_pos, month
+    arcadeplus.set_background_color(arcadeplus.color.WHITE)
+    if f_period == 'year':
+        date = f'For the year ended {year}'
+    else:
+        date = f'For the month ended {month}'
+    worksheet = 'Income Statement'
+    arcadeplus.draw_text(name, 400, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
+    
 
 
 def make_balance_sheet():
