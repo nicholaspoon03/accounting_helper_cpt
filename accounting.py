@@ -322,7 +322,7 @@ def capitalize(acct_type_name):
     copy = acct_type_name.copy()
     acct_type_name.clear()
     for n in range(len(copy)):
-        if 'A/R' not in copy[n] and 'A/P' not in copy[n]:
+        if 'A/R' not in copy[n] and 'A/P' not in copy[n] and 'HST' not in copy[n]:
             if copy[n].find(' ') == -1:
                 acct_type_name.append(copy[n].capitalize())
             else:
@@ -365,7 +365,12 @@ def liquidity_liabilities():
             account_name = liability_name.pop(i)
             account_value = liability_value.pop(i)
             account_dr_cr = liability_cr_dr.pop(i)
-            liability_name.insert(count, account_name)
+            if account_name == 'hst payable':
+                liability_name.insert(count, 'HST Payable')
+            elif account_name == 'hst recoverable':
+                liability_name.insert(count, 'HST Recoverable')
+            else:
+                liability_name.insert(count, account_name)
             liability_value.insert(count, account_value)
             liability_cr_dr.insert(count, account_dr_cr)
             count += 1
@@ -514,7 +519,6 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 def make_chart_of_accounts():
     global asset_name, liability_name, capital_name, first_line_y
     global expense_name, revenue_name, drawing_name
-    arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if interval1:
         starting_num = 1
@@ -605,11 +609,6 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
         first_line_y -= 25
 
 
-def add_currency(column, acct_t_value, index):
-    global currency_pos
-    
-
-
 def make_income_statement():
     pass
 
@@ -638,6 +637,7 @@ def entry():
     print('Please type any names in the following format: lastname;firstname unless otherwise stated\n')
     print("NOTE: PLEASE DO NOT INCLUDE CURRENCY SIGNS when entering the value. You can set the default currency sign by typing 'currency'") #need to add
     print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type '(del) account name' but replace 'account name' with the account name.")
+    print("You can also delete the data of the account that you are in by typing 'empty' when asked to enter the name of your account")
     print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only\ndelete assets when you are in the assets menu.\n')
     print("Type 'back' to go back to the main menu to enter another type of account.\n")
     print("When all data is entered, go back to the main menu and type 'create' to start creating your worksheets.\n")
@@ -761,6 +761,15 @@ def entry():
             elif a_name == 'back':
                 home = True
                 assets = False
+            elif a_name == 'empty':
+                confirm = input("Type 'confirm' to delete all assets or any other key to cancel: ")
+                if confirm == 'confirm':
+                    asset_name.clear()
+                    asset_value.clear()
+                    asset_cr_dr.clear()
+                    print('All assets deleted')
+                else:
+                    continue
             else:
                 try:
                     a_value = float(input('Please enter the value of your asset: '))
@@ -796,6 +805,15 @@ def entry():
             elif l_name == 'back':
                 home = True
                 liabilities = False
+            elif l_name == 'empty':
+                confirm = input("Type 'confirm' to delete all liabilities or any other key to cancel: ")
+                if confirm == 'confirm':
+                    liability_name.clear()
+                    liability_value.clear()
+                    liability_cr_dr.clear()
+                    print('All liabilities deleted')
+                else:
+                    continue
             else:
                 try:
                     l_value = float(input('Please enter the value of your liability: '))
@@ -830,6 +848,15 @@ def entry():
             elif c_name == 'back':
                 home = True
                 capital = False
+            elif c_name == 'empty':
+                confirm = input("Type 'confirm' to delete all capital accounts or any other key to cancel: ")
+                if confirm == 'confirm':
+                    capital_name.clear()
+                    capital_value.clear()
+                    capital_cr_dr.clear()
+                    print('All capital accounts deleted')
+                else:
+                    continue
             elif 'capital' not in c_name or ',' not in c_name or ';' not in c_name:
                 print('Invalid capital account. Please re-enter')
                 continue
@@ -867,6 +894,15 @@ def entry():
             elif d_name == 'back':
                 home = True
                 drawings = False
+            elif d_name == 'empty':
+                confirm = input("Type 'confirm' to delete all drawings accounts or any other key to cancel: ")
+                if confirm == 'confirm':
+                    drawing_name.clear()
+                    drawing_value.clear()
+                    drawing_cr_dr.clear()
+                    print('All drawings accounts deleted')
+                else:
+                    continue
             elif 'drawings' not in d_name or ',' not in d_name or ';' not in d_name:
                 print('Invalid drawings account. Please re-enter.')
                 continue
@@ -903,6 +939,15 @@ def entry():
             elif r_name == 'back':
                 home = True
                 revenue = False
+            elif r_name == 'empty':
+                confirm = input("Type 'confirm' to delete all revenue accounts or any other key to cancel: ")
+                if confirm == 'confirm':
+                    revenue_name.clear()
+                    revenue_value.clear()
+                    revenue_cr_dr.clear()
+                    print('All revenue accounts deleted')
+                else:
+                    continue
             else:
                 try:
                     r_value = float(input('Please enter the amount of revenue for this account: '))
@@ -936,6 +981,15 @@ def entry():
             elif e_name == 'back':
                 home = True
                 expenses = False
+            elif e_name == 'empty':
+                confirm = input("Type 'confirm' to delete all expenses accounts or any other key to cancel: ")
+                if confirm == 'confirm':
+                    expense_name.clear()
+                    expense_value.clear()
+                    expense_cr_dr.clear()
+                    print('All expense accounts deleted')
+                else:
+                    continue
             else:
                 try:
                     e_value = float(input('Please enter the cost of the expense: '))
