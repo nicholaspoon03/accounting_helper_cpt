@@ -104,7 +104,7 @@ def on_draw():
     elif trial_balance:
         make_trial_balance()
     elif income_statement:
-        pass
+        make_income_statement()
     elif balance_sheet:
         pass
 
@@ -621,12 +621,13 @@ def make_income_statement():
     if f_period == 'year':
         date = f'For the year ended {year}'
     else:
-        date = f'For the month ended {month}'
+        date = f'For the month ended {month} {month_days[month]}, {year}'
     worksheet = 'Income Statement'
     arcadeplus.draw_text(name, 400, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
-    
+    arcadeplus.draw_text('Revenue', 10, 573, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_line(5, 573, 85, 573, arcadeplus.color.BLACK)
 
 
 def make_balance_sheet():
