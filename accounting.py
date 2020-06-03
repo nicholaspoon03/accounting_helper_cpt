@@ -628,6 +628,24 @@ def make_income_statement():
     arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Revenue', 10, 573, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(5, 573, 85, 573, arcadeplus.color.BLACK)
+    first_line_y = 548
+    deb_cred_to_pos_neg(revenue_value, revenue_cr_dr, -1, 1)
+    deb_cred_to_pos_neg(expense_value, expense_cr_dr, 1, -1)
+    for n in range(len(revenue_name)):
+        arcadeplus.draw_text(revenue_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        if n == 0:
+            if len(revenue_name) == 1:
+                arcadeplus.draw_text(revenue_value.)
+
+
+def deb_cred_to_pos_neg(copy_list, acct_t_value, acct_t_cr_dr, dr_num, cr_num):
+    copy_list = []
+    for n in range(len(acct_t_value)):
+        if acct_t_cr_dr[n] == 'dr':
+            copy_list.append(acct_t_value[n]*dr_num)
+        else:
+            copy_list.append(acct_t_value[n]*cr_num)
+
 
 
 def make_balance_sheet():
