@@ -629,22 +629,51 @@ def make_income_statement():
     arcadeplus.draw_text('Revenue', 10, 573, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(5, 573, 85, 573, arcadeplus.color.BLACK)
     first_line_y = 548
-    deb_cred_to_pos_neg(revenue_value, revenue_cr_dr, -1, 1)
-    deb_cred_to_pos_neg(expense_value, expense_cr_dr, 1, -1)
+    rev_value_copy = []
+    exp_value_copy = []
+    total_revenue = 0
+    total_expenses = 0
+    deb_cred_to_pos_neg(total_revenue, rev_value_copy, revenue_name, revenue_cr_dr, -1, 1)
+    deb_cred_to_pos_neg(total_expenses, exp_value_copy, expense_name, expense_cr_dr, 1, -1)
+    x = 410
+    x_2 = 610
     for n in range(len(revenue_name)):
         arcadeplus.draw_text(revenue_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if n == 0:
+            if currency_pos == 'before':
+                text = currency + str(rev_value_copy[n])
+                x = 400
+                x_2 = 600
+            else:
+                text = str(rev_value_copy[n]) + currency
             if len(revenue_name) == 1:
-                arcadeplus.draw_text(revenue_value.)
+                arcadeplus.draw_text(text, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            else:
+                arcadeplus.draw_text(text, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        else:
+            arcadeplus.draw_text(rev_value_copy[n], x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        first_line_y -= 25
+    if len(revenue_name) != 1:
+        if currency_pos == 'before':
+            x = 400
+        arcadeplus.draw_text(total_revenue, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_line(555, first_line_y, 700, first_line_y, arcadeplus.color.BLACK)
+    first_line_y -= 50
+    
 
 
-def deb_cred_to_pos_neg(copy_list, acct_t_value, acct_t_cr_dr, dr_num, cr_num):
-    copy_list = []
+def deb_cred_to_pos_neg(total_acct_t_value, copy_list, acct_t_value, acct_t_cr_dr, dr_num, cr_num):
+    global currency_pos, currency
     for n in range(len(acct_t_value)):
         if acct_t_cr_dr[n] == 'dr':
             copy_list.append(acct_t_value[n]*dr_num)
         else:
             copy_list.append(acct_t_value[n]*cr_num)
+        total_acct_t_value += copy_list[n]
+    if currency_pos == 'before':
+        total_acct_t_value = currency + str(total_acct_t_value)
+    else:
+        total_acct_t_value = str(total_acct_t_value) + currency
 
 
 
