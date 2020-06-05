@@ -14,20 +14,23 @@ scroll_up = False
 home_page = True
 chart_of_accounts = False
 trial_balance = False
-balance_sheet = False
 income_statement = False
 main_menu = False
 
 home_page_press = False
 chart_of_accounts_press = False
 trial_balance_press = False
-balance_sheet_press = False
 income_statement_press = False
 
 interval5 = False
 interval1 = False
 interval_selection_done = False
 interval_selection_page = False
+
+rev_value_copy = []
+exp_value_copy = []
+total_revenue = 0
+total_expenses = 0
 
 month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31, 'June': 30, 'July': 31, 'August': 31, 'September': 30, 'October': 31, 'November': 30, 'December': 31}
 month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
@@ -105,8 +108,6 @@ def on_draw():
         make_trial_balance()
     elif income_statement:
         make_income_statement()
-    elif balance_sheet:
-        pass
 
 
 def on_key_press(key, modifiers):
@@ -123,7 +124,7 @@ def on_key_press(key, modifiers):
 
 def on_key_release(key, modifiers):
     global main_menu, home_page, chart_of_accounts
-    global trial_balance, income_statement, balance_sheet
+    global trial_balance, income_statement
     global scroll_up, scroll_down, interval_selection_page
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
@@ -132,7 +133,6 @@ def on_key_release(key, modifiers):
             chart_of_accounts = False
             trial_balance = False
             income_statement = False
-            balance_sheet = False
     if not home_page and interval_selection_page:
         if key == arcadeplus.key.DOWN:
             scroll_down = False
@@ -172,11 +172,9 @@ def home():
     chart_of_accounts_bttn(WIDTH/2, 400, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
     trial_balance_bttn(WIDTH/2, 350, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
     income_statement_bttn(WIDTH/2, 300, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
-    balance_sheet_bttn(WIDTH/2, 250, 200, 40, arcadeplus.color.WHITE, arcadeplus.color.GREEN_YELLOW, arcadeplus.color.LIME_GREEN)
     arcadeplus.draw_text('Chart of Accounts', 430, 388, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Trial Balance', 450, 338, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Income Statement', 428, 288, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_text('Balance Sheet', 445, 238, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Press esc to come back to this menu from the sub menus', 80, 100, arcadeplus.color.BLUE_SAPPHIRE, 30, font_name='calibri')
 
 
@@ -242,26 +240,6 @@ def income_statement_bttn(centre_x, centre_y, width, height, color_press, color_
     else:
         arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
         income_statement_press = False
-
-
-def balance_sheet_bttn(centre_x, centre_y, width, height, color_press, color_hover, color_default):
-    global balance_sheet_press, home_page, balance_sheet
-    left = centre_x - width/2
-    right = centre_x + width/2
-    top = centre_y + height/2
-    bottom = centre_y - height/2
-    if left <= mouse_x <= right and bottom <= mouse_y <= top and mouse_press:
-        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_press)
-        balance_sheet_press = True
-    elif left <= mouse_x <= right and bottom <= mouse_y <= top and not mouse_press:
-        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_hover)
-        if balance_sheet_press:
-            balance_sheet_press = False
-            balance_sheet = True
-            home_page = False
-    else:
-        arcadeplus.draw_rectangle_filled(centre_x, centre_y, width, height, color_default)
-        balance_sheet_press = False
 
 
 def interval_selection():
@@ -617,6 +595,7 @@ def make_income_statement():
     global revenue_name, revenue_cr_dr, revenue_value, name
     global expense_name, expense_value, expense_cr_dr, day
     global year, f_period, currency, currency_pos, month
+    global rev_value_copy, exp_value_copy, total_revenue, total_expenses
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if f_period == 'year':
         date = f'For the year ended {year}'
@@ -629,56 +608,86 @@ def make_income_statement():
     arcadeplus.draw_text('Revenue', 10, 573, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(5, 573, 85, 573, arcadeplus.color.BLACK)
     first_line_y = 548
-    rev_value_copy = []
-    exp_value_copy = []
-    total_revenue = 0
-    total_expenses = 0
-    deb_cred_to_pos_neg(total_revenue, rev_value_copy, revenue_name, revenue_cr_dr, -1, 1)
-    deb_cred_to_pos_neg(total_expenses, exp_value_copy, expense_name, expense_cr_dr, 1, -1)
+    deb_cred_to_pos_neg(total_revenue, rev_value_copy, revenue_value, revenue_cr_dr, -1, 1, True)
+    deb_cred_to_pos_neg(total_expenses, exp_value_copy, expense_value, expense_cr_dr, 1, -1, False)
+    make_income_statement_2(revenue_name, first_line_y, rev_value_copy)
+    for n in revenue_value:
+        total_revenue += n
+    if len(revenue_name) != 1:
+        arcadeplus.draw_line(355, first_line+25, 500, first_line+25, arcadeplus.color.BLACK)
+        if currency_pos == 'before':
+            x_2 = 600
+        arcadeplus.draw_text(total_revenue, x_2, first_line, arcadeplus.color.BLACK, 16, font_name='calibri')
+    first_line_y -= 25
+    arcadeplus.draw_text('Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    make_income_statement_2(expense_name, first_line_y, exp_value_copy)
+    # for n in range(len(revenue_name)):
+    #     arcadeplus.draw_text(revenue_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    #     if n == 0:
+    #         if currency_pos == 'before':
+    #             text = currency + str(rev_value_copy[n])
+    #             x = 400
+    #             x_2 = 600
+    #         else:
+    #             text = str(rev_value_copy[n]) + currency
+    #         if len(revenue_name) == 1:
+    #             arcadeplus.draw_text(text, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    #         else:
+    #             arcadeplus.draw_text(text, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    #     else:
+    #         arcadeplus.draw_text(rev_value_copy[n], x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    #     first_line_y -= 25
+    # if len(revenue_name) != 1:
+    #     arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
+    #     if currency_pos == 'before':
+    #         x = 400
+    #     arcadeplus.draw_text(total_revenue, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    # first_line_y -= 50
+    #make standardized function for printing out revenue/expenses to clean up code
+
+
+def make_income_statement_2(acct_t_name, first_line, copy_list):
     x = 410
     x_2 = 610
-    for n in range(len(revenue_name)):
-        arcadeplus.draw_text(revenue_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+    for n in range(len(acct_t_name)):
+        arcadeplus.draw_text(acct_t_name[n], 10, first_line, arcadeplus.color.BLACK, 16, font_name='calibri')
         if n == 0:
             if currency_pos == 'before':
-                text = currency + str(rev_value_copy[n])
+                text = currency + str(copy_list[n])
                 x = 400
                 x_2 = 600
             else:
-                text = str(rev_value_copy[n]) + currency
-            if len(revenue_name) == 1:
-                arcadeplus.draw_text(text, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+                text = str(copy_list[n]) + currency
+            if len(acct_t_name) == 1:
+                arcadeplus.draw_text(text, x_2, first_line, arcadeplus.color.BLACK, 16, font_name='calibri')
             else:
-                arcadeplus.draw_text(text, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+                arcadeplus.draw_text(text, x, first_line, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
-            arcadeplus.draw_text(rev_value_copy[n], x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-        first_line_y -= 25
-    if len(revenue_name) != 1:
-        if currency_pos == 'before':
-            x = 400
-        arcadeplus.draw_text(total_revenue, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-        arcadeplus.draw_line(555, first_line_y, 700, first_line_y, arcadeplus.color.BLACK)
-    first_line_y -= 50
-    
+            arcadeplus.draw_text(str(copy_list[n]), x, first_line, arcadeplus.color.BLACK, 16, font_name='calibri')
+        first_line -= 25
+    # if len(acct_t_name) != 1:
+    #     arcadeplus.draw_line(355, first_line+25, 500, first_line+25, arcadeplus.color.BLACK)
+    #     if currency_pos == 'before':
+    #         x_2 = 600
+    #     arcadeplus.draw_text(total_acct_t_value, x_2, first_line, arcadeplus.color.BLACK, 16, font_name='calibri')
+    # arcadeplus.draw_line(555, first_line, 700, first_line, arcadeplus.color.BLACK)
+    # first_line -= 50
 
 
-def deb_cred_to_pos_neg(total_acct_t_value, copy_list, acct_t_value, acct_t_cr_dr, dr_num, cr_num):
+def deb_cred_to_pos_neg(total_acct_t_value, copy_list, acct_t_value, \
+                        acct_t_cr_dr, dr_num, cr_num, true_false):
     global currency_pos, currency
     for n in range(len(acct_t_value)):
         if acct_t_cr_dr[n] == 'dr':
             copy_list.append(acct_t_value[n]*dr_num)
         else:
             copy_list.append(acct_t_value[n]*cr_num)
-        total_acct_t_value += copy_list[n]
-    if currency_pos == 'before':
-        total_acct_t_value = currency + str(total_acct_t_value)
-    else:
-        total_acct_t_value = str(total_acct_t_value) + currency
-
-
-
-def make_balance_sheet():
-    pass
+    #     total_acct_t_value += copy_list[n]
+    # if true_false:
+    #     if currency_pos == 'before':
+    #         total_acct_t_value = currency + str(total_acct_t_value)
+    #     else:
+    #         total_acct_t_value = str(total_acct_t_value) + currency
 
 
 def entry():
