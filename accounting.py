@@ -612,13 +612,13 @@ def make_income_statement():
     x_2 = 610
     total_revenue = 0
     total_expenses = 0
-    print(rev_value_copy)
     for n in rev_value_copy:
         total_revenue += n
     for n in exp_value_copy:
         total_expenses += n
     if len(revenue_name) >= 2:
         arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
+        arcadeplus.draw_text('Total Revenue', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
             x_2 = 600
             arcadeplus.draw_text(currency+str(total_revenue), x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -633,6 +633,7 @@ def make_income_statement():
     x_2 = 610
     if len(expense_name) >= 2:
         arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
+        arcadeplus.draw_text('Total Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
             x_2 = 600
             arcadeplus.draw_text(currency+str(total_expenses), x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -645,39 +646,8 @@ def make_income_statement():
     else:
         net_income = str(total_revenue - total_expenses) + currency
     arcadeplus.draw_text(net_income, x_2, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-    # if currency_pos == 'before':
-    #     # net_income = currency + str(total_revenue - total_expenses)
-    #     arcadeplus.draw_text(currency+str(total_revenue-total_expenses), x_2, first_line_y-25, \
-    #         arcadeplus.color.BLACK, 16, font_name='calibri')
-    # else:
-    #     # net_income = str(total_revenue - total_expenses) + currency
-    #     arcadeplus.draw_text(str(total_revenue-total_expenses)+currency, x_2, first_line_y-25, \
-    #         arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(555, first_line_y-25, 700, first_line_y-25, arcadeplus.color.BLACK)
     arcadeplus.draw_line(555, first_line_y-30, 700, first_line_y-30, arcadeplus.color.BLACK)
-    # for n in range(len(revenue_name)):
-    #     arcadeplus.draw_text(revenue_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    #     if n == 0:
-    #         if currency_pos == 'before':
-    #             text = currency + str(rev_value_copy[n])
-    #             x = 400
-    #             x_2 = 600
-    #         else:
-    #             text = str(rev_value_copy[n]) + currency
-    #         if len(revenue_name) == 1:
-    #             arcadeplus.draw_text(text, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    #         else:
-    #             arcadeplus.draw_text(text, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    #     else:
-    #         arcadeplus.draw_text(rev_value_copy[n], x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    #     first_line_y -= 25
-    # if len(revenue_name) != 1:
-    #     arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
-    #     if currency_pos == 'before':
-    #         x = 400
-    #     arcadeplus.draw_text(total_revenue, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    # first_line_y -= 50
-    #make standardized function for printing out revenue/expenses to clean up code
 
 
 def make_income_statement_2(acct_t_name, copy_list):
@@ -700,13 +670,6 @@ def make_income_statement_2(acct_t_name, copy_list):
         else:
             arcadeplus.draw_text(str(copy_list[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         first_line_y -= 25
-    # if len(acct_t_name) != 1:
-    #     arcadeplus.draw_line(355, first_line+25, 500, first_line+25, arcadeplus.color.BLACK)
-    #     if currency_pos == 'before':
-    #         x_2 = 600
-    #     arcadeplus.draw_text(total_acct_t_value, x_2, first_line, arcadeplus.color.BLACK, 16, font_name='calibri')
-    # arcadeplus.draw_line(555, first_line, 700, first_line, arcadeplus.color.BLACK)
-    # first_line -= 50
 
 
 def deb_cred_to_pos_neg(copy_list, acct_t_value, \
