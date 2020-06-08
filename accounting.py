@@ -27,11 +27,6 @@ interval1 = False
 interval_selection_done = False
 interval_selection_page = False
 
-rev_value_copy = []
-exp_value_copy = []
-total_revenue = 0
-total_expenses = 0
-
 month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31, 'June': 30, 'July': 31, 'August': 31, 'September': 30, 'October': 31, 'November': 30, 'December': 31}
 month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 'August', 'September', 'October', 'November', 'December']
@@ -594,7 +589,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
 def make_income_statement():
     global revenue_name, revenue_cr_dr, revenue_value, name
     global expense_name, expense_value, expense_cr_dr, day
-    global year, f_period, currency, currency_pos, month
+    global year, f_period, currency, currency_pos, month, first_line_y
     global rev_value_copy, exp_value_copy, total_revenue, total_expenses
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if f_period == 'year':
@@ -608,39 +603,56 @@ def make_income_statement():
     arcadeplus.draw_text('Revenue', 10, 573, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(5, 573, 85, 573, arcadeplus.color.BLACK)
     first_line_y = 548
-    deb_cred_to_pos_neg(total_revenue, rev_value_copy, revenue_value, revenue_cr_dr, -1, 1, True)
-    deb_cred_to_pos_neg(total_expenses, exp_value_copy, expense_value, expense_cr_dr, 1, -1, False)
+    rev_value_copy = []
+    exp_value_copy = []
+    deb_cred_to_pos_neg(rev_value_copy, revenue_value, revenue_cr_dr, -1, 1)
+    deb_cred_to_pos_neg(exp_value_copy, expense_value, expense_cr_dr, 1, -1)
     make_income_statement_2(revenue_name, rev_value_copy)
     x = 410
     x_2 = 610
+    total_revenue = 0
+    total_expenses = 0
+    print(rev_value_copy)
     for n in rev_value_copy:
         total_revenue += n
     for n in exp_value_copy:
         total_expenses += n
-    if len(revenue_name) != 1:
+    if len(revenue_name) >= 2:
         arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
         if currency_pos == 'before':
             x_2 = 600
-        arcadeplus.draw_text(total_revenue, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            arcadeplus.draw_text(currency+str(total_revenue), x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        else:
+            arcadeplus.draw_text(str(total_revenue)+currency, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y -= 50
     arcadeplus.draw_text('Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(5, first_line_y, 85, first_line_y, arcadeplus.color.BLACK)
+    first_line_y -= 25
     make_income_statement_2(expense_name, exp_value_copy)
     x = 410
     x_2 = 610
-    if len(expense_name) != 1:
+    if len(expense_name) >= 2:
         arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
         if currency_pos == 'before':
             x_2 = 600
-        arcadeplus.draw_text(total_expenses, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            arcadeplus.draw_text(currency+str(total_expenses), x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+        else:
+            arcadeplus.draw_text(str(total_expenses)+currency, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(555, first_line_y, 700, first_line_y, arcadeplus.color.BLACK)
     arcadeplus.draw_text('Net Income', 10, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
     if currency_pos == 'before':
         net_income = currency + str(total_revenue - total_expenses)
-        x_2 = 600
     else:
         net_income = str(total_revenue - total_expenses) + currency
     arcadeplus.draw_text(net_income, x_2, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+    # if currency_pos == 'before':
+    #     # net_income = currency + str(total_revenue - total_expenses)
+    #     arcadeplus.draw_text(currency+str(total_revenue-total_expenses), x_2, first_line_y-25, \
+    #         arcadeplus.color.BLACK, 16, font_name='calibri')
+    # else:
+    #     # net_income = str(total_revenue - total_expenses) + currency
+    #     arcadeplus.draw_text(str(total_revenue-total_expenses)+currency, x_2, first_line_y-25, \
+    #         arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_line(555, first_line_y-25, 700, first_line_y-25, arcadeplus.color.BLACK)
     arcadeplus.draw_line(555, first_line_y-30, 700, first_line_y-30, arcadeplus.color.BLACK)
     # for n in range(len(revenue_name)):
@@ -669,6 +681,7 @@ def make_income_statement():
 
 
 def make_income_statement_2(acct_t_name, copy_list):
+    global first_line_y
     x = 410
     x_2 = 610
     for n in range(len(acct_t_name)):
@@ -696,8 +709,8 @@ def make_income_statement_2(acct_t_name, copy_list):
     # first_line -= 50
 
 
-def deb_cred_to_pos_neg(total_acct_t_value, copy_list, acct_t_value, \
-                        acct_t_cr_dr, dr_num, cr_num, true_false):
+def deb_cred_to_pos_neg(copy_list, acct_t_value, \
+                        acct_t_cr_dr, dr_num, cr_num):
     global currency_pos, currency
     for n in range(len(acct_t_value)):
         if acct_t_cr_dr[n] == 'dr':
