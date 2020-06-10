@@ -143,6 +143,9 @@ def on_key_release(key, modifiers):
             scroll_up = False
         if key == arcadeplus.key.S:
             save = False
+    if home_page:
+        scroll_down = False
+        scroll_up = False
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -518,14 +521,13 @@ def make_chart_of_accounts():
     make_chart_of_accounts_2(drawing_name, 300, starting_num)
     make_chart_of_accounts_2(revenue_name, 400, starting_num)
     make_chart_of_accounts_2(expense_name, 500, starting_num)
-    if scroll_down:
+    if scroll_down and _bottom > first_line_y-50:
         _top -= 10
         _bottom -= 10
-        arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
-    if scroll_up:
+    if scroll_up and _top < HEIGHT:
         _top += 10
         _bottom += 10
-        arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
+    arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
     # if save:
     #     image = get_image()
     #     image.save('chart_of_accounts.png', 'PNG')
@@ -548,7 +550,7 @@ def make_trial_balance():
     global liability_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name
     global drawing_value, drawing_cr_dr, revenue_name, revenue_value, revenue_cr_dr
     global expense_name, expense_value, expense_cr_dr, name, month, day, year, first_line_y
-    global total_credits, total_debits, currency, currency_pos
+    global total_credits, total_debits, currency, currency_pos, _bottom, _top
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
@@ -564,18 +566,19 @@ def make_trial_balance():
     make_trial_balance_2(drawing_name, drawing_value, drawing_cr_dr)
     make_trial_balance_2(revenue_name, revenue_value, revenue_cr_dr)
     make_trial_balance_2(expense_name, expense_value, expense_cr_dr)
-    arcadeplus.draw_line(355, first_line_y, 500, first_line_y, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(555, first_line_y, 700, first_line_y, arcadeplus.color.BLACK)
     if currency_pos == 'before':
         arcadeplus.draw_text(currency+str(total_debits), 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
         arcadeplus.draw_text(currency+str(total_credits), 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
     else:
         arcadeplus.draw_text(str(total_debits)+currency, 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
         arcadeplus.draw_text(str(total_credits)+currency, 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_line(355, first_line_y-30, 500, first_line_y-30, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(355, first_line_y-35, 500, first_line_y-35, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(555, first_line_y-30, 700, first_line_y-30, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(555, first_line_y-35, 700, first_line_y-35, arcadeplus.color.BLACK)
+    if scroll_down and _bottom > first_line_y-50:
+        _top -= 10
+        _bottom -= 10
+    if scroll_up and _top < HEIGHT:
+        _top += 10
+        _bottom += 10
+    arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
@@ -616,6 +619,7 @@ def make_income_statement():
     global expense_name, expense_value, expense_cr_dr, day
     global year, f_period, currency, currency_pos, month, first_line_y
     global rev_value_copy, exp_value_copy, total_revenue, total_expenses
+    global _bottom, _top
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if f_period == 'year':
         date = f'For the year ended {year}'
@@ -626,8 +630,7 @@ def make_income_statement():
     arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Revenue', 10, 573, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_line(5, 573, 85, 573, arcadeplus.color.BLACK)
-    first_line_y = 548
+    first_line_y = 536
     rev_value_copy = []
     exp_value_copy = []
     deb_cred_to_pos_neg(rev_value_copy, revenue_value, revenue_cr_dr, -1, 1)
@@ -642,7 +645,6 @@ def make_income_statement():
     for n in exp_value_copy:
         total_expenses += n
     if len(revenue_name) >= 2:
-        arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
         arcadeplus.draw_text('Total Revenue', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
             x_2 = 600
@@ -651,28 +653,30 @@ def make_income_statement():
             arcadeplus.draw_text(str(total_revenue)+currency, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y -= 50
     arcadeplus.draw_text('Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_line(5, first_line_y, 85, first_line_y, arcadeplus.color.BLACK)
-    first_line_y -= 25
+    first_line_y -= 38
     make_income_statement_2(expense_name, exp_value_copy)
     x = 410
     x_2 = 610
     if len(expense_name) >= 2:
-        arcadeplus.draw_line(355, first_line_y+25, 500, first_line_y+25, arcadeplus.color.BLACK)
         arcadeplus.draw_text('Total Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
             x_2 = 600
             arcadeplus.draw_text(currency+str(total_expenses), x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
             arcadeplus.draw_text(str(total_expenses)+currency, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_line(555, first_line_y, 700, first_line_y, arcadeplus.color.BLACK)
-    arcadeplus.draw_text('Net Income', 10, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text('Net Income', 10, first_line_y-50, arcadeplus.color.BLACK, 16, font_name='calibri')
     if currency_pos == 'before':
         net_income = currency + str(total_revenue - total_expenses)
     else:
         net_income = str(total_revenue - total_expenses) + currency
-    arcadeplus.draw_text(net_income, x_2, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_line(555, first_line_y-25, 700, first_line_y-25, arcadeplus.color.BLACK)
-    arcadeplus.draw_line(555, first_line_y-30, 700, first_line_y-30, arcadeplus.color.BLACK)
+    arcadeplus.draw_text(net_income, x_2, first_line_y-50, arcadeplus.color.BLACK, 16, font_name='calibri')
+    if scroll_down and _bottom > first_line_y-50:
+        _top -= 10
+        _bottom -= 10
+    if scroll_up and _top < HEIGHT:
+        _top += 10
+        _bottom += 10
+    arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
 
 
 def make_income_statement_2(acct_t_name, copy_list):
@@ -822,12 +826,15 @@ def entry():
                     if currency == 'back':
                         continue
                     if currency != '':
+                        if len(currency) > 1:
+                            print('Not a valid currency. Please re-enter information')
+                            error = True
+                            continue
                         try:
                             check_currency = int(currency)
-                            if len(currency) > 1:
-                                print('Not a valid currency. Please re-enter information')
-                                error = True
-                                continue
+                            print('Not a valid currency. Please re-enter information')
+                            error = True
+                            continue
                         except:
                             pass
                     currency_pos = input("Does the currency go before or after the money value?\nEnter 'before' or 'after'. Leaving this blank defaults to before: ")
