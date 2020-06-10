@@ -10,6 +10,7 @@ _top = HEIGHT
 
 scroll_down = False
 scroll_up = False
+save = False
 
 home_page = True
 chart_of_accounts = False
@@ -90,9 +91,13 @@ def update(delta_time):
 
 
 def on_draw():
+    global _top, _bottom
     arcadeplus.start_render()
     # Draw in here...
     if home_page:
+        arcadeplus.set_viewport(0, WIDTH, 0, HEIGHT)
+        _top = HEIGHT
+        _bottom = 0
         home()
     elif chart_of_accounts:
         if interval_selection_done:
@@ -106,20 +111,23 @@ def on_draw():
 
 
 def on_key_press(key, modifiers):
-    global main_menu, scroll_down, scroll_up, interval_selection_page
+    global main_menu, scroll_down, scroll_up, interval_selection_page, \
+        save
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
-    if not home_page and interval_selection_page:
+    if not home_page and not interval_selection_page:
         if key == arcadeplus.key.DOWN:
             scroll_down = True
         if key == arcadeplus.key.UP:
             scroll_up = True
+        if key == arcadeplus.key.S:
+            save = True
 
 
 def on_key_release(key, modifiers):
     global main_menu, home_page, chart_of_accounts
-    global trial_balance, income_statement
+    global trial_balance, income_statement, save
     global scroll_up, scroll_down, interval_selection_page
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
@@ -128,11 +136,13 @@ def on_key_release(key, modifiers):
             chart_of_accounts = False
             trial_balance = False
             income_statement = False
-    if not home_page and interval_selection_page:
+    if not home_page and not interval_selection_page:
         if key == arcadeplus.key.DOWN:
             scroll_down = False
         if key == arcadeplus.key.UP:
             scroll_up = False
+        if key == arcadeplus.key.S:
+            save = False
 
 
 def on_mouse_press(x, y, button, modifiers):
@@ -159,6 +169,10 @@ def set_viewport(left, right, bottom, top):
     _right = right
     _bottom = bottom
     _top = top
+
+
+def get_image():
+    pass
 
 
 def home():
@@ -491,7 +505,7 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 
 def make_chart_of_accounts():
     global asset_name, liability_name, capital_name, first_line_y
-    global expense_name, revenue_name, drawing_name
+    global expense_name, revenue_name, drawing_name, _top, _bottom
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if interval1:
         starting_num = 1
@@ -504,6 +518,17 @@ def make_chart_of_accounts():
     make_chart_of_accounts_2(drawing_name, 300, starting_num)
     make_chart_of_accounts_2(revenue_name, 400, starting_num)
     make_chart_of_accounts_2(expense_name, 500, starting_num)
+    if scroll_down:
+        _top -= 10
+        _bottom -= 10
+        arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
+    if scroll_up:
+        _top += 10
+        _bottom += 10
+        arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
+    # if save:
+    #     image = get_image()
+    #     image.save('chart_of_accounts.png', 'PNG')
 
 
 def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
