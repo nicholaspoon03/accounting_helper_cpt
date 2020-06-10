@@ -829,6 +829,11 @@ def entry():
                 asset_name.pop(index)
                 asset_value.pop(index)
                 asset_cr_dr.pop(index)
+            elif a_name == 'view':
+                print(asset_name)
+                print(asset_value)
+                print(asset_cr_dr)
+                continue
             elif a_name == 'back':
                 home = True
                 assets = False
@@ -858,7 +863,9 @@ def entry():
                 asset_value.append(a_value)
                 asset_cr_dr.append(a_cr_dr)
             if a_name != 'back':
-                print(f'Your current assets are {asset_name}')
+                print(asset_name)
+                print(asset_value)
+                print(asset_cr_dr)
         elif liabilities:
             print("Plese enter accounts payable in the form of 'a/p creditor'; replace creditor with the creditor")
             print("Note: If creditor is a person, please enter name in this format: 'lastname;firstname'")
@@ -873,6 +880,11 @@ def entry():
                 liability_name.pop(index)
                 liability_value.pop(index)
                 liability_cr_dr.pop(index)
+            elif l_name == 'view':
+                print(liability_name)
+                print(liability_value)
+                print(liability_cr_dr)
+                continue
             elif l_name == 'back':
                 home = True
                 liabilities = False
@@ -902,7 +914,9 @@ def entry():
                 liability_value.append(l_value)
                 liability_cr_dr.append(l_cr_dr)
             if l_name != 'back':    
-                print(f'Your current liabilities are {liability_name}')
+                print(liability_name)
+                print(liability_value)
+                print(liability_cr_dr)
         elif capital:
             print("Note: Please enter capital accounts in the following format: 'lastname;firstname, capital' or 'lastname;firstinitial., capital")
             c_name = input('Please enter the name of your capital account: ').lower()
@@ -916,6 +930,11 @@ def entry():
                 capital_name.pop(index)
                 capital_value.pop(index)
                 capital_cr_dr.pop(index)
+            elif c_name == 'view':
+                print(capital_name)
+                print(capital_value)
+                print(capital_cr_dr)
+                continue
             elif c_name == 'back':
                 home = True
                 capital = False
@@ -948,7 +967,9 @@ def entry():
                 capital_value.append(c_value)
                 capital_cr_dr.append(c_cr_dr)
             if c_name != 'back':
-                print(f'Your current capital accounts are {capital_name}')
+                print(capital_name)
+                print(capital_value)
+                print(capital_cr_dr)
         elif drawings:
             print("Note: Please enter drawings accounts in the following format: 'lastname;firstname, drawings' or 'lastname;firstname, drawings")
             d_name = input('Please enter the name of your drawings account: ').lower()
@@ -962,6 +983,11 @@ def entry():
                 drawing_name.pop(index)
                 drawing_value.pop(index)
                 drawing_cr_dr.pop(index)
+            elif d_name == 'view':
+                print(drawing_name)
+                print(drawing_value)
+                print(drawing_cr_dr)
+                continue
             elif d_name == 'back':
                 home = True
                 drawings = False
@@ -994,7 +1020,9 @@ def entry():
                 drawing_value.append(d_value)
                 drawing_cr_dr.append(d_cr_dr)
             if d_name != 'back':
-                print(f'Your current drawings accounts are {drawing_name}')
+                print(drawing_name)
+                print(drawing_value)
+                print(drawing_cr_dr)
         elif revenue:
             r_name = input('Please enter the name of your revenue: ').lower()
             if '(del)' in r_name:
@@ -1007,6 +1035,11 @@ def entry():
                 revenue_name.pop(index)
                 revenue_value.pop(index)
                 revenue_cr_dr.pop(index)
+            elif r_name == 'view':
+                print(revenue_name)
+                print(revenue_value)
+                print(revenue_cr_dr)
+                continue
             elif r_name == 'back':
                 home = True
                 revenue = False
@@ -1036,7 +1069,9 @@ def entry():
                 revenue_value.append(r_value)
                 revenue_cr_dr.append(r_cr_dr)
             if r_name != 'back':
-                print(f'Your current revenue accounts are {revenue_name}')
+                print(revenue_name)
+                print(revenue_value)
+                print(revenue_cr_dr)
         elif expenses:
             e_name = input('Please enter the name of your expense: ').lower()
             if '(del)' in e_name:
@@ -1049,6 +1084,11 @@ def entry():
                 expense_name.pop(index)
                 expense_value.pop(index)
                 expense_cr_dr.pop(index)
+            elif e_name == 'view':
+                print(expense_name)
+                print(expense_value)
+                print(expense_cr_dr)
+                continue
             elif e_name == 'back':
                 home = True
                 expenses = False
@@ -1078,7 +1118,9 @@ def entry():
                 expense_value.append(e_value)
                 expense_cr_dr.append(e_cr_dr)
             if e_name != 'back':
-                print(f'Your current expenses are {expense_name}')
+                print(expense_name)
+                print(expense_value)
+                print(expense_cr_dr)
 
 
 if __name__ == '__main__':
