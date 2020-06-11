@@ -82,6 +82,7 @@ def setup():
     window.on_mouse_release = on_mouse_release
     window.on_mouse_motion = on_mouse_motion
     window.set_viewport = set_viewport
+    window.get_image = get_image
 
     arcadeplus.run()
 
@@ -528,9 +529,9 @@ def make_chart_of_accounts():
         _top += 10
         _bottom += 10
     arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
-    # if save:
-    #     image = get_image()
-    #     image.save('chart_of_accounts.png', 'PNG')
+    if save:
+        image = arcadeplus.get_image(0, HEIGHT, WIDTH, first_line_y-50)
+        image.save('chart_of_accounts.png', 'PNG')
 
 
 def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
@@ -638,12 +639,12 @@ def make_income_statement():
     make_income_statement_2(revenue_name, rev_value_copy)
     x = 410
     x_2 = 610
-    total_revenue = 0
-    total_expenses = 0
-    for n in rev_value_copy:
-        total_revenue += n
-    for n in exp_value_copy:
-        total_expenses += n
+    # total_revenue = 0
+    # total_expenses = 0
+    # for n in rev_value_copy:
+    #     total_revenue += n
+    # for n in exp_value_copy:
+    #     total_expenses += n
     if len(revenue_name) >= 2:
         arcadeplus.draw_text('Total Revenue', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
@@ -722,7 +723,7 @@ def entry():
     global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
     global expense_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name, drawing_value
     global drawing_cr_dr, name, month, day, year, f_period, assets, liabilities, capital, drawings
-    global revenue, expenses, currency_pos, currency
+    global revenue, expenses, currency_pos, currency, total_revenue, total_expenses
     home = True
     assets = False
     liabilities = False
@@ -731,8 +732,14 @@ def entry():
     revenue = False
     expenses = False
     error = False
+    total_assets = 0
+    total_liabilities = 0
+    total_capital = 0
+    total_drawings = 0
+    total_revenue = 0
+    total_expenses = 0
     print("Welcome to Accounting Helper\n")
-    print("This app allows you to make a chart of accounts, trial balance, income statement, and balance sheet with a\nsimple input of your assets, liabilities, and owner's equity.\n")
+    print("This app allows you to make a chart of accounts, trial balance, and income statement with a\nsimple input of your assets, liabilities, and owner's equity.\n")
     print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
     print('Please type any names in the following format: lastname;firstname unless otherwise stated\n')
     print("NOTE: PLEASE DO NOT INCLUDE CURRENCY SIGNS when entering the value. You can set the default currency sign by typing 'currency'") #need to add
@@ -767,8 +774,10 @@ def entry():
                 expenses = True
                 home = False
             elif n == 'create':
-                if len(asset_name) != 0 and len(capital_name) == 0:
-                    print('Capital Account is required to start creating worksheets.')
+                if total_assets != total_liabilities + total_capital - total_drawings + total_revenue - total_expenses:
+                    print('The account values do not satisfy the fundamental accounting equation: assets = liabilities + capital - drawings + revenue - expenses')
+                    print(f'Assets: {total_assets}, Liabilities: {total_liabilities}, Capital: {total_capital}')
+                    print(f'Drawings: {total_drawings}, Revenue: {total_revenue}, Expenses: {total_expenses}')
                     continue
                 else:
                     print("Type 'back' at any point to go back to main menu or if you make a mistake in any of the following inputs.")
@@ -858,6 +867,10 @@ def entry():
                 except:
                     print('Asset not found. Please re-enter.')
                     continue
+                if asset_cr_dr[index] == 'dr':
+                    total_assets -= asset_value[index]
+                else:
+                    total_assets += asset_value[index]
                 asset_name.pop(index)
                 asset_value.pop(index)
                 asset_cr_dr.pop(index)
@@ -875,6 +888,7 @@ def entry():
                     asset_name.clear()
                     asset_value.clear()
                     asset_cr_dr.clear()
+                    total_assets = 0
                     print('All assets deleted')
                 else:
                     continue
@@ -894,6 +908,10 @@ def entry():
                 asset_name.append(a_name)
                 asset_value.append(a_value)
                 asset_cr_dr.append(a_cr_dr)
+                if a_cr_dr == 'dr':
+                    total_assets += a_value
+                else:
+                    total_assets -= a_value
             if a_name != 'back':
                 print(asset_name)
                 print(asset_value)
@@ -909,6 +927,10 @@ def entry():
                 except:
                     print('Liability not found. Please re-enter.')
                     continue
+                if liability_cr_dr[index] == 'dr':
+                    total_liabilities += liability_value[index]
+                else:
+                    total_liabilities -= liability_value[index]
                 liability_name.pop(index)
                 liability_value.pop(index)
                 liability_cr_dr.pop(index)
@@ -926,6 +948,7 @@ def entry():
                     liability_name.clear()
                     liability_value.clear()
                     liability_cr_dr.clear()
+                    total_liabilities = 0
                     print('All liabilities deleted')
                 else:
                     continue
@@ -945,6 +968,10 @@ def entry():
                 liability_name.append(l_name)
                 liability_value.append(l_value)
                 liability_cr_dr.append(l_cr_dr)
+                if l_cr_dr == 'dr':
+                    total_liabilities -= l_value
+                else:
+                    total_liabilities += l_value
             if l_name != 'back':    
                 print(liability_name)
                 print(liability_value)
@@ -959,6 +986,10 @@ def entry():
                 except:
                     print('Capital account not found. Please re-enter.')
                     continue
+                if capital_cr_dr[index] == 'dr':
+                    total_capital += capital_value[index]
+                else:
+                    total_capital -= capital_value[index]
                 capital_name.pop(index)
                 capital_value.pop(index)
                 capital_cr_dr.pop(index)
@@ -976,6 +1007,7 @@ def entry():
                     capital_name.clear()
                     capital_value.clear()
                     capital_cr_dr.clear()
+                    total_capital = 0
                     print('All capital accounts deleted')
                 else:
                     continue
@@ -998,6 +1030,10 @@ def entry():
                 capital_name.append(c_name)
                 capital_value.append(c_value)
                 capital_cr_dr.append(c_cr_dr)
+                if c_cr_dr == 'dr':
+                    total_capital -= c_value
+                else:
+                    total_capital += c_value
             if c_name != 'back':
                 print(capital_name)
                 print(capital_value)
@@ -1012,6 +1048,10 @@ def entry():
                 except:
                     print('Drawings account not found. Please re-enter.')
                     continue
+                if drawing_cr_dr[index] == 'dr':
+                    total_drawings -= drawing_value[index]
+                else:
+                    total_drawings += drawing_value[index]
                 drawing_name.pop(index)
                 drawing_value.pop(index)
                 drawing_cr_dr.pop(index)
@@ -1029,6 +1069,7 @@ def entry():
                     drawing_name.clear()
                     drawing_value.clear()
                     drawing_cr_dr.clear()
+                    total_drawings = 0
                     print('All drawings accounts deleted')
                 else:
                     continue
@@ -1051,6 +1092,10 @@ def entry():
                 drawing_name.append(d_name)
                 drawing_value.append(d_value)
                 drawing_cr_dr.append(d_cr_dr)
+                if d_cr_dr == 'dr':
+                    total_drawings += d_value
+                else:
+                    total_drawings -= d_value
             if d_name != 'back':
                 print(drawing_name)
                 print(drawing_value)
@@ -1064,6 +1109,10 @@ def entry():
                 except:
                     print('Revenue account not found. Please re-enter.')
                     continue
+                if revenue_cr_dr[index] == 'dr':
+                    total_revenue += revenue_value[index]
+                else:
+                    total_revenue -= revenue_value[index]
                 revenue_name.pop(index)
                 revenue_value.pop(index)
                 revenue_cr_dr.pop(index)
@@ -1081,6 +1130,7 @@ def entry():
                     revenue_name.clear()
                     revenue_value.clear()
                     revenue_cr_dr.clear()
+                    total_revenue = 0
                     print('All revenue accounts deleted')
                 else:
                     continue
@@ -1100,6 +1150,10 @@ def entry():
                 revenue_name.append(r_name)
                 revenue_value.append(r_value)
                 revenue_cr_dr.append(r_cr_dr)
+                if r_cr_dr == 'dr':
+                    total_revenue -= r_value
+                else:
+                    total_revenue += r_value
             if r_name != 'back':
                 print(revenue_name)
                 print(revenue_value)
@@ -1113,6 +1167,10 @@ def entry():
                 except:
                     print('Expense not found. Please re-enter.')
                     continue
+                if expense_cr_dr[index] == 'dr':
+                    total_expenses -= expense_value[index]
+                else:
+                    total_expenses += expense_value[index]
                 expense_name.pop(index)
                 expense_value.pop(index)
                 expense_cr_dr.pop(index)
@@ -1130,6 +1188,7 @@ def entry():
                     expense_name.clear()
                     expense_value.clear()
                     expense_cr_dr.clear()
+                    total_expenses = 0
                     print('All expense accounts deleted')
                 else:
                     continue
@@ -1149,6 +1208,10 @@ def entry():
                 expense_name.append(e_name)
                 expense_value.append(e_value)
                 expense_cr_dr.append(e_cr_dr)
+                if e_cr_dr == 'dr':
+                    total_expenses += e_value
+                else:
+                    total_expenses -= e_value
             if e_name != 'back':
                 print(expense_name)
                 print(expense_value)
