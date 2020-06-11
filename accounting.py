@@ -799,13 +799,13 @@ def entry():
                     if len(date) != 10:
                         print('Not a valid date. Please re-enter information.')
                         error = True
-                    elif month < 0 or month > 12:
+                    elif month <= 0 or month > 12:
                         print('Not a valid date. Please re-enter information.')
                         error = True
                     elif year < 0:
                         print('Not a valid date. Please re-enter information.')
                         error = True
-                    elif day < 0:
+                    elif day <= 0:
                         print('Not a valid date. Please re-enter information.')
                         error = True
                     else:
