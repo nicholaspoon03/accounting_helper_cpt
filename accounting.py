@@ -834,7 +834,9 @@ def entry():
                     currency = input('Please enter the currency in which you want to use.\nLeaving this blank defaults to $: ')
                     if currency == 'back':
                         continue
-                    if currency != '':
+                    elif currency == '':
+                        currency = '$'
+                    elif currency != '':
                         if len(currency) > 1:
                             print('Not a valid currency. Please re-enter information')
                             error = True
@@ -846,10 +848,12 @@ def entry():
                             continue
                         except:
                             pass
-                    currency_pos = input("Does the currency go before or after the money value?\nEnter 'before' or 'after'. Leaving this blank defaults to before: ")
+                    currency_pos = input("By default, the currency sign goes before the money value?\nEnter 'after' to change this or leave this blank for it to stay the same: ")
                     if currency_pos == 'back':
                         continue
-                    if currency_pos != 'before' and currency_pos != 'after' and currency_pos != '':
+                    elif currency_pos == '':
+                        currency_pos = 'before'
+                    elif currency_pos != 'before' and currency_pos != 'after':
                         print('Not a valid input. Please re-enter information')
                         error = True
                         continue
