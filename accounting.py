@@ -112,8 +112,7 @@ def on_draw():
 
 
 def on_key_press(key, modifiers):
-    global main_menu, scroll_down, scroll_up, interval_selection_page, \
-        save
+    global main_menu, scroll_down, scroll_up, save
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
@@ -137,6 +136,7 @@ def on_key_release(key, modifiers):
             chart_of_accounts = False
             trial_balance = False
             income_statement = False
+            interval_selection_page = False
     if not home_page and not interval_selection_page:
         if key == arcadeplus.key.DOWN:
             scroll_down = False
@@ -346,7 +346,7 @@ def liquidity_assets():
 
 
 def liquidity_liabilities():
-    global bank, liability_name, liability_value, liability_cr_dr, count
+    global liability_name, liability_value, liability_cr_dr, count
     liability_liquidity = ['hst payable', 'hst recoverable', 'bank loan', 'mortgage']
     bank = False
     liquidity_ar_ap(liability_name, liability_value, liability_cr_dr, 'a/p', 'A/P')
@@ -368,13 +368,6 @@ def liquidity_liabilities():
         except:
             pass
     capitalize(liability_name)
-
-
-def liquidity_capital_drawings():
-    global capital_name, capital_value, capital_cr_dr
-    global drawing_name, drawing_value, drawing_cr_dr
-    sort_liquidity_cap_draw(capital_name, capital_value, capital_cr_dr, 'Capital')
-    sort_liquidity_cap_draw(drawing_name, drawing_value, drawing_cr_dr, 'Drawings')
 
 
 def sort_liquidity_cap_draw(acct_t_name, acct_t_value, acct_t_dc, text):
@@ -508,8 +501,7 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 
 
 def make_chart_of_accounts():
-    global asset_name, liability_name, capital_name, first_line_y
-    global expense_name, revenue_name, drawing_name, _top, _bottom
+    global first_line_y, _top, _bottom
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if interval1:
         starting_num = 1
@@ -535,7 +527,7 @@ def make_chart_of_accounts():
 
 
 def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
-    global first_line_y, acct_num
+    global first_line_y
     if acct_t_name != drawing_name:
         acct_num = 1
     for n in range(len(acct_t_name)):
@@ -547,11 +539,7 @@ def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
 
 
 def make_trial_balance():
-    global asset_name, asset_value, asset_cr_dr, liability_name, liability_value
-    global liability_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name
-    global drawing_value, drawing_cr_dr, revenue_name, revenue_value, revenue_cr_dr
-    global expense_name, expense_value, expense_cr_dr, name, month, day, year, first_line_y
-    global total_credits, total_debits, currency, currency_pos, _bottom, _top
+    global total_credits, total_debits, _bottom, _top, first_line_y
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
@@ -583,8 +571,7 @@ def make_trial_balance():
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
-    global first_line_y, currency_pos, currency
-    global total_debits, total_credits
+    global first_line_y, total_debits, total_credits
     copy_values = acct_t_value.copy()
     debit_count = 0
     credit_count = 0
@@ -616,11 +603,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
 
 
 def make_income_statement():
-    global revenue_name, revenue_cr_dr, revenue_value, name
-    global expense_name, expense_value, expense_cr_dr, day
-    global year, f_period, currency, currency_pos, month, first_line_y
-    global rev_value_copy, exp_value_copy, total_revenue, total_expenses
-    global _bottom, _top
+    global _bottom, _top, first_line_y
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if f_period == 'year':
         date = f'For the year ended {year}'
@@ -639,12 +622,6 @@ def make_income_statement():
     make_income_statement_2(revenue_name, rev_value_copy)
     x = 410
     x_2 = 610
-    # total_revenue = 0
-    # total_expenses = 0
-    # for n in rev_value_copy:
-    #     total_revenue += n
-    # for n in exp_value_copy:
-    #     total_expenses += n
     if len(revenue_name) >= 2:
         arcadeplus.draw_text('Total Revenue', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
@@ -704,18 +681,11 @@ def make_income_statement_2(acct_t_name, copy_list):
 
 def deb_cred_to_pos_neg(copy_list, acct_t_value, \
                         acct_t_cr_dr, dr_num, cr_num):
-    global currency_pos, currency
     for n in range(len(acct_t_value)):
         if acct_t_cr_dr[n] == 'dr':
             copy_list.append(acct_t_value[n]*dr_num)
         else:
             copy_list.append(acct_t_value[n]*cr_num)
-    #     total_acct_t_value += copy_list[n]
-    # if true_false:
-    #     if currency_pos == 'before':
-    #         total_acct_t_value = currency + str(total_acct_t_value)
-    #     else:
-    #         total_acct_t_value = str(total_acct_t_value) + currency
 
 
 def entry():
@@ -742,7 +712,7 @@ def entry():
     print("This app allows you to make a chart of accounts, trial balance, and income statement with a\nsimple input of your assets, liabilities, and owner's equity.\n")
     print("First, type 'assets', 'liabilities', 'capital', 'drawings', 'revenue', or 'expenses' to select the type\nof account that you would like to input.\n")
     print('Please type any names in the following format: lastname;firstname unless otherwise stated\n')
-    print("NOTE: PLEASE DO NOT INCLUDE CURRENCY SIGNS when entering the value. You can set the default currency sign by typing 'currency'") #need to add
+    print("NOTE: PLEASE DO NOT INCLUDE CURRENCY SIGNS when entering the value. You can set the default currency sign by typing 'currency'")
     print("If at any point you want to delete an account, finish entering all the information to the account you are currently entering.\nWhen asked for the next account, type '(del) account name' but replace 'account name' with the account name.")
     print("You can also delete the data of the account that you are in by typing 'empty' when asked to enter the name of your account")
     print('Note: You can only delete an account if that account is part of the menu you are in. For example, you can only\ndelete assets when you are in the assets menu.\n')
@@ -1226,7 +1196,8 @@ if __name__ == '__main__':
     entry()
     liquidity_assets()
     liquidity_liabilities()
-    liquidity_capital_drawings()
+    sort_liquidity_cap_draw(capital_name, capital_value, capital_cr_dr, 'Capital')
+    sort_liquidity_cap_draw(drawing_name, drawing_value, drawing_cr_dr, 'Drawings')
     capitalize(revenue_name)
     capitalize(expense_name)
     setup()
