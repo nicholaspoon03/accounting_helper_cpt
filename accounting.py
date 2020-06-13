@@ -797,6 +797,12 @@ def make_income_statement():
         is_title = False
         is_name = False
         is_date = False
+    elif 0 <= mouse_x <= 395 and first_line_y-35 <= mouse_y <= 593 and mouse_press:
+        is_col2 = False
+        is_col1 = False
+        is_title = False
+        is_name = False
+        is_date = False
     if is_name:
         arcadeplus.draw_rectangle_outline(500, 670, 900, 20, arcadeplus.color.BLACK)
     elif is_title:
