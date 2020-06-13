@@ -688,7 +688,6 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
                 if currency_pos == 'before':
                     copy_values[n] = currency + str(copy_values[n])
                 else:
-                    c_tb_col1x = 410
                     copy_values[n] = str(copy_values[n]) + currency
                 debit_count += 1
                 arcadeplus.draw_text(str(copy_values[n]), c_tb_col1x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -700,7 +699,6 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
                 if currency_pos == 'before':
                     copy_values[n] = currency + str(copy_values[n])
                 else:
-                    c_tb_col2x = 610
                     copy_values[n] = str(copy_values[n]) + currency
                 credit_count += 1
                 arcadeplus.draw_text(str(copy_values[n]), c_tb_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -802,7 +800,7 @@ def entry():
     global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
     global expense_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name, drawing_value
     global drawing_cr_dr, name, month, day, year, f_period, assets, liabilities, capital, drawings
-    global revenue, expenses, currency_pos, currency, total_revenue, total_expenses
+    global revenue, expenses, currency_pos, currency, total_revenue, total_expenses, c_tb_col1x, c_tb_col2x
     home = True
     assets = False
     liabilities = False
@@ -936,6 +934,9 @@ def entry():
                         print('Not a valid input. Please re-enter information')
                         error = True
                         continue
+                    if currency_pos == 'after':
+                        c_tb_col1x = 410
+                        c_tb_col2x = 610
                     break
             else:
                 print('Please enter a valid input')
