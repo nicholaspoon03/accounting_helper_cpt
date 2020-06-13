@@ -69,6 +69,9 @@ tb_title = False
 tb_date = False
 tb_col1 = False
 tb_col2 = False
+tb_name_x = 400
+tb_title_x = 400
+tb_date_x = 400
 
 mouse_press = False
 mouse_x = 0
@@ -98,13 +101,18 @@ def update(delta_time):
 
 
 def on_draw():
-    global _top, _bottom
+    global _top, _bottom, tb_name, tb_date, tb_title, tb_col1, tb_col2
     arcadeplus.start_render()
     # Draw in here...
     if home_page:
         arcadeplus.set_viewport(0, WIDTH, 0, HEIGHT)
         _top = HEIGHT
         _bottom = 0
+        tb_name = False
+        tb_date = False
+        tb_title = False
+        tb_col1 = False
+        tb_col2 = False
         home()
     elif chart_of_accounts:
         if interval_selection_done:
@@ -119,6 +127,7 @@ def on_draw():
 
 def on_key_press(key, modifiers):
     global main_menu, scroll_down, scroll_up, save
+    global tb_date_x, tb_name_x, tb_title_x
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
@@ -129,6 +138,23 @@ def on_key_press(key, modifiers):
             scroll_up = True
         if key == arcadeplus.key.S:
             save = True
+    if trial_balance:
+        if key == arcadeplus.key.LEFT:
+            if tb_name and tb_name_x > 0:
+                tb_name_x -= 5
+            elif tb_title and tb_title_x > 0:
+                tb_title_x -= 5
+            elif tb_date and tb_date_x > 0:
+                tb_date_x -= 5
+            elif tb_col1 and 396 <= tb_date_x <= 595:
+                
+        if key == arcadeplus.key.RIGHT:
+            if tb_name and tb_name_x < 1000:
+                tb_name_x += 5
+            elif tb_title and tb_title_x < 1000:
+                tb_title_x += 5
+            elif tb_date and tb_date_x < 1000:
+                tb_date_x += 5
 
 
 def on_key_release(key, modifiers):
@@ -546,13 +572,14 @@ def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
 
 def make_trial_balance():
     global total_credits, total_debits, _bottom, _top, first_line_y
-    global tb_name, tb_title, tb_date, tb_col1, tb_col2
+    global tb_name, tb_title, tb_date, tb_col1, tb_col2, tb_name_x
+    global tb_title_x, tb_date_x
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
-    arcadeplus.draw_text(name, 400, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(name, tb_name_x, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(worksheet, tb_title_x, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(date, tb_date_x, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y = 573
     total_debits = 0
     total_credits = 0
@@ -593,14 +620,28 @@ def make_trial_balance():
         tb_title = False
         tb_col1 = False
         tb_col2 = False
-    # elif 
+    elif 396 <= mouse_x <= 595 and first_line_y-35 <= mouse_y <= 593 and mouse_press:
+        tb_col1 = True
+        tb_date = False
+        tb_name = False
+        tb_col2 = False
+        tb_title = False
+    elif 596 <= mouse_x <= 995 and first_line_y-35 <= mouse_y <= 593 and mouse_press:
+        tb_col2 = True
+        tb_col1 = False
+        tb_date = False
+        tb_title = False
+        tb_name = False
     if tb_name:
         arcadeplus.draw_rectangle_outline(500, 670, 900, 20, arcadeplus.color.BLACK)
     elif tb_title:
         arcadeplus.draw_rectangle_outline(500, 645, 900, 20, arcadeplus.color.BLACK)
     elif tb_date:
         arcadeplus.draw_rectangle_outline(500, 620, 900, 20, arcadeplus.color.BLACK)
-
+    elif tb_col1:
+        arcadeplus.draw_lrtb_rectangle_outline(396, 595, 593, first_line_y-35, arcadeplus.color.BLACK)
+    elif tb_col2:
+        arcadeplus.draw_lrtb_rectangle_outline(596, 995, 593, first_line_y-35, arcadeplus.color.BLACK)
     
 
 
