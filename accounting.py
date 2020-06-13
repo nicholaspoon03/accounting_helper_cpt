@@ -77,6 +77,12 @@ tb_col1x = 410
 c_tb_col2x = 600
 tb_col2x = 610
 
+is_name = False
+is_title = False
+is_date = False
+is_col1 = False
+is_col2 = False
+
 mouse_press = False
 mouse_x = 0
 mouse_y = 0
@@ -709,7 +715,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
 
 
 def make_income_statement():
-    global _bottom, _top, first_line_y
+    global _bottom, _top, first_line_y, is_name, is_title, is_date, is_col1, is_col2
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if f_period == 'year':
         date = f'For the year ended {year}'
@@ -761,6 +767,46 @@ def make_income_statement():
         _top += 10
         _bottom += 10
     arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
+    if 660 <= mouse_y <= 680 and mouse_press:
+        is_name = True
+        is_date = False
+        is_title = False
+        is_col1 = False
+        is_col2 = False
+    elif 635 <= mouse_y <= 655 and mouse_press:
+        is_title = True
+        is_date = False
+        is_name = False
+        is_col1 = False
+        is_col2 = False
+    elif 610 <= mouse_y <= 630 and mouse_press:
+        is_date = True
+        is_title = False
+        is_name = False
+        is_col1 = False
+        is_col2 = False
+    elif 396 <= mouse_x <= 595 and first_line_y-35 <= mouse_y <= 593 and mouse_press:
+        is_col1 = True
+        is_col2 = False
+        is_title = False
+        is_name = False
+        is_date = False
+    elif 596 <= mouse_x <= 995 and first_line_y-35 <= mouse_y <= 593 and mouse_press:
+        is_col2 = True
+        is_col1 = False
+        is_title = False
+        is_name = False
+        is_date = False
+    if is_name:
+        arcadeplus.draw_rectangle_outline(500, 670, 900, 20, arcadeplus.color.BLACK)
+    elif is_title:
+        arcadeplus.draw_rectangle_outline(500, 645, 900, 20, arcadeplus.color.BLACK)
+    elif is_date:
+        arcadeplus.draw_rectangle_outline(500, 620, 900, 20, arcadeplus.color.BLACK)
+    elif is_col1:
+        arcadeplus.draw_lrtb_rectangle_filled(396, 595, 593, first_line_y-35, arcadeplus.color.BLACK)
+    elif is_col2:
+        arcadeplus.draw_lrtb_rectangle_filled(596, 995, 593, first_line_y-35, arcadeplus.color.BLACK)
 
 
 def make_income_statement_2(acct_t_name, copy_list):
