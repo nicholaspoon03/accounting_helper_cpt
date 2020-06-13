@@ -72,6 +72,10 @@ tb_col2 = False
 tb_name_x = 400
 tb_title_x = 400
 tb_date_x = 400
+c_tb_col1x = 400
+tb_col1x = 410
+c_tb_col2x = 600
+tb_col2x = 610
 
 mouse_press = False
 mouse_x = 0
@@ -126,8 +130,8 @@ def on_draw():
 
 
 def on_key_press(key, modifiers):
-    global main_menu, scroll_down, scroll_up, save
-    global tb_date_x, tb_name_x, tb_title_x
+    global main_menu, scroll_down, scroll_up, save, tb_col2x, c_tb_col2x
+    global tb_date_x, tb_name_x, tb_title_x, tb_col1x, c_tb_col1x
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
@@ -139,6 +143,18 @@ def on_key_press(key, modifiers):
         if key == arcadeplus.key.S:
             save = True
     if trial_balance:
+        if key == arcadeplus.key.R:
+            tb_name_x = 400
+            tb_date_x = 400
+            tb_title_x = 400
+            tb_col1x = 410
+            tb_col2x = 610
+            if currency_pos == 'before':
+                c_tb_col1x = 400
+                c_tb_col2x = 600
+            else:
+                c_tb_col1x = 410
+                c_tb_col2x = 610
         if key == arcadeplus.key.LEFT:
             if tb_name and tb_name_x > 0:
                 tb_name_x -= 5
@@ -146,8 +162,12 @@ def on_key_press(key, modifiers):
                 tb_title_x -= 5
             elif tb_date and tb_date_x > 0:
                 tb_date_x -= 5
-            elif tb_col1 and 396 <= tb_date_x <= 595:
-                
+            elif tb_col1 and 396 <= tb_col1x:
+                tb_col1x -= 5
+                c_tb_col1x -= 5
+            elif tb_col2 and 596 <= tb_col2x:
+                tb_col2x -= 5
+                c_tb_col2x -= 5
         if key == arcadeplus.key.RIGHT:
             if tb_name and tb_name_x < 1000:
                 tb_name_x += 5
@@ -155,6 +175,12 @@ def on_key_press(key, modifiers):
                 tb_title_x += 5
             elif tb_date and tb_date_x < 1000:
                 tb_date_x += 5
+            elif tb_col1 and tb_col1x <= 595:
+                tb_col1x += 5
+                c_tb_col1x += 5
+            elif tb_col2 and tb_col2x <= 995:
+                tb_col2x += 5
+                c_tb_col2x += 5
 
 
 def on_key_release(key, modifiers):
@@ -572,8 +598,7 @@ def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
 
 def make_trial_balance():
     global total_credits, total_debits, _bottom, _top, first_line_y
-    global tb_name, tb_title, tb_date, tb_col1, tb_col2, tb_name_x
-    global tb_title_x, tb_date_x
+    global tb_name, tb_title, tb_date, tb_col1, tb_col2
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
@@ -590,11 +615,11 @@ def make_trial_balance():
     make_trial_balance_2(revenue_name, revenue_value, revenue_cr_dr)
     make_trial_balance_2(expense_name, expense_value, expense_cr_dr)
     if currency_pos == 'before':
-        arcadeplus.draw_text(currency+str(total_debits), 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-        arcadeplus.draw_text(currency+str(total_credits), 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(currency+str(total_debits), c_tb_col1x, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(currency+str(total_credits), c_tb_col2x, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
     else:
-        arcadeplus.draw_text(str(total_debits)+currency, 410, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-        arcadeplus.draw_text(str(total_credits)+currency, 610, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(str(total_debits)+currency, c_tb_col1x, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(str(total_credits)+currency, c_tb_col2x, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
     if scroll_down and _bottom > first_line_y-50:
         _top -= 10
         _bottom -= 10
@@ -632,6 +657,12 @@ def make_trial_balance():
         tb_date = False
         tb_title = False
         tb_name = False
+    elif 0 <= mouse_x <= 395 and first_line_y-35 <= mouse_y <= 593 and mouse_press:
+        tb_name = False
+        tb_title = False
+        tb_date = False
+        tb_col1 = False
+        tb_col2 = False
     if tb_name:
         arcadeplus.draw_rectangle_outline(500, 670, 900, 20, arcadeplus.color.BLACK)
     elif tb_title:
@@ -646,33 +677,35 @@ def make_trial_balance():
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
-    global first_line_y, total_debits, total_credits
+    global first_line_y, total_debits, total_credits, c_tb_col1x, c_tb_col2x
     copy_values = acct_t_value.copy()
     debit_count = 0
     credit_count = 0
     for n in range(len(acct_t_name)):
         arcadeplus.draw_text(acct_t_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if acct_t_cr_dr[n] == 'dr':
-            x = 410
             if debit_count == 0:
                 if currency_pos == 'before':
                     copy_values[n] = currency + str(copy_values[n])
-                    x = 400
                 else:
+                    c_tb_col1x = 410
                     copy_values[n] = str(copy_values[n]) + currency
                 debit_count += 1
-            arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+                arcadeplus.draw_text(str(copy_values[n]), c_tb_col1x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            else:
+                arcadeplus.draw_text(str(copy_values[n]), tb_col1x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
             total_debits += acct_t_value[n]
         else:
-            x = 610
             if credit_count == 0:
                 if currency_pos == 'before':
                     copy_values[n] = currency + str(copy_values[n])
-                    x = 600
                 else:
+                    c_tb_col2x = 610
                     copy_values[n] = str(copy_values[n]) + currency
                 credit_count += 1
-            arcadeplus.draw_text(str(copy_values[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+                arcadeplus.draw_text(str(copy_values[n]), c_tb_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            else:
+                arcadeplus.draw_text(str(copy_values[n]), tb_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
             total_credits += acct_t_value[n]
         first_line_y -= 25
 
