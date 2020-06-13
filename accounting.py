@@ -64,6 +64,12 @@ expense_name = []
 expense_value = []
 expense_cr_dr = []
 
+tb_name = False
+tb_title = False
+tb_date = False
+tb_col1 = False
+tb_col2 = False
+
 mouse_press = False
 mouse_x = 0
 mouse_y = 0
@@ -540,6 +546,7 @@ def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
 
 def make_trial_balance():
     global total_credits, total_debits, _bottom, _top, first_line_y
+    global tb_name, tb_title, tb_date, tb_col1, tb_col2
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
     worksheet = 'Trial Balance'
@@ -559,8 +566,8 @@ def make_trial_balance():
         arcadeplus.draw_text(currency+str(total_debits), 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
         arcadeplus.draw_text(currency+str(total_credits), 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
     else:
-        arcadeplus.draw_text(str(total_debits)+currency, 400, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
-        arcadeplus.draw_text(str(total_credits)+currency, 600, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(str(total_debits)+currency, 410, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
+        arcadeplus.draw_text(str(total_credits)+currency, 610, first_line_y-25, arcadeplus.color.BLACK, 16, font_name='calibri')
     if scroll_down and _bottom > first_line_y-50:
         _top -= 10
         _bottom -= 10
@@ -568,6 +575,33 @@ def make_trial_balance():
         _top += 10
         _bottom += 10
     arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
+    if 660 <= mouse_y <= 680 and mouse_press:
+        tb_name = True
+        tb_date = False
+        tb_title = False
+        tb_col1 = False
+        tb_col2 = False
+    elif 635 <= mouse_y <= 655 and mouse_press:
+        tb_title = True
+        tb_name = False
+        tb_date = False 
+        tb_col1 = False
+        tb_col2 = False
+    elif 610 <= mouse_y <= 630 and mouse_press:
+        tb_date = True
+        tb_name = False
+        tb_title = False
+        tb_col1 = False
+        tb_col2 = False
+    # elif 
+    if tb_name:
+        arcadeplus.draw_rectangle_outline(500, 670, 900, 20, arcadeplus.color.BLACK)
+    elif tb_title:
+        arcadeplus.draw_rectangle_outline(500, 645, 900, 20, arcadeplus.color.BLACK)
+    elif tb_date:
+        arcadeplus.draw_rectangle_outline(500, 620, 900, 20, arcadeplus.color.BLACK)
+
+    
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
@@ -674,6 +708,7 @@ def make_income_statement_2(acct_t_name, copy_list):
                 arcadeplus.draw_text(text, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
             else:
                 arcadeplus.draw_text(text, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+                x = 410
         else:
             arcadeplus.draw_text(str(copy_list[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         first_line_y -= 25
