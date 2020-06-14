@@ -783,9 +783,14 @@ def make_income_statement():
     if len(revenue_name) >= 2:
         arcadeplus.draw_text('Total Revenue', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
-            arcadeplus.draw_text(currency+str(total_revenue), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            if total_revenue < 0:
+                word = '-' + currency + str(total_revenue*-1)
+            else:
+                word = currency + str(total_revenue)
+            # arcadeplus.draw_text(currency+str(total_revenue), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
-            arcadeplus.draw_text(str(total_revenue)+currency, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            word = str(total_revenue) + currency
+        arcadeplus.draw_text(word, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y -= 50
     arcadeplus.draw_text('Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y -= 38
@@ -793,12 +798,20 @@ def make_income_statement():
     if len(expense_name) >= 2:
         arcadeplus.draw_text('Total Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
-            arcadeplus.draw_text(currency+str(total_expenses), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            if total_expenses < 0:
+                word = '-' + currency + str(total_expenses*-1)
+            else:
+                word = currency + str(total_expenses)
+            # arcadeplus.draw_text(currency+str(total_expenses), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
-            arcadeplus.draw_text(str(total_expenses)+currency, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            word = str(total_expenses) + currency
+        arcadeplus.draw_text(word, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Net Income', 10, first_line_y-50, arcadeplus.color.BLACK, 16, font_name='calibri')
     if currency_pos == 'before':
-        net_income = currency + str(total_revenue - total_expenses)
+        if total_revenue - total_expenses < 0:
+            net_income = '-' + currency + str((total_revenue-total_expenses)*-1)
+        else:
+            net_income = currency + str(total_revenue - total_expenses)
     else:
         net_income = str(total_revenue - total_expenses) + currency
     arcadeplus.draw_text(net_income, c_is_col2x, first_line_y-50, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -865,7 +878,10 @@ def make_income_statement_2(acct_t_name, copy_list):
         arcadeplus.draw_text(acct_t_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if n == 0:
             if currency_pos == 'before':
-                text = currency + str(copy_list[n])
+                if copy_list[n] < 0:
+                    text = '-' + currency + str(copy_list[n]*-1)
+                else:
+                    text = currency + str(copy_list[n])
             else:
                 text = str(copy_list[n]) + currency
             if len(acct_t_name) == 1:
