@@ -787,7 +787,6 @@ def make_income_statement():
                 word = '-' + currency + str(total_revenue*-1)
             else:
                 word = currency + str(total_revenue)
-            # arcadeplus.draw_text(currency+str(total_revenue), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
             word = str(total_revenue) + currency
         arcadeplus.draw_text(word, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
@@ -802,7 +801,6 @@ def make_income_statement():
                 word = '-' + currency + str(total_expenses*-1)
             else:
                 word = currency + str(total_expenses)
-            # arcadeplus.draw_text(currency+str(total_expenses), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
             word = str(total_expenses) + currency
         arcadeplus.draw_text(word, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
