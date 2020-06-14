@@ -82,6 +82,13 @@ is_title = False
 is_date = False
 is_col1 = False
 is_col2 = False
+is_name_x = 400
+is_title_x = 400
+is_date_x = 400
+c_is_col1x = 400
+is_col1x = 410
+c_is_col2x = 600
+is_col2x = 610
 
 mouse_press = False
 mouse_x = 0
@@ -138,6 +145,7 @@ def on_draw():
 def on_key_press(key, modifiers):
     global main_menu, scroll_down, scroll_up, save, tb_col2x, c_tb_col2x
     global tb_date_x, tb_name_x, tb_title_x, tb_col1x, c_tb_col1x
+    global is_name_x, is_date_x, is_title_x, is_col1x, is_col2x, c_is_col1x, c_is_col2x
     if not home_page:
         if key == arcadeplus.key.ESCAPE:
             main_menu = True
@@ -187,6 +195,45 @@ def on_key_press(key, modifiers):
             elif tb_col2 and tb_col2x <= 995:
                 tb_col2x += 5
                 c_tb_col2x += 5
+    if income_statement:
+        if key == arcadeplus.key.R:
+            is_name_x = 400
+            is_date_x = 400
+            is_title_x = 400
+            is_col1x = 410
+            is_col2x = 610
+            if currency_pos == 'before':
+                c_is_col1x = 400
+                c_is_col2x = 600
+            else:
+                c_is_col1x = 410
+                c_is_col2x = 610
+        if key == arcadeplus.key.LEFT:
+            if is_name and is_name_x > 0:
+                is_name_x -= 5
+            elif is_title and is_title_x > 0:
+                is_title_x -= 5
+            elif is_date and is_date_x > 0:
+                is_date_x -= 5
+            elif is_col1 and 396 <= is_col1x:
+                is_col1x -= 5
+                c_is_col1x -= 5
+            elif is_col2 and 596 <= is_col2x:
+                is_col2x -= 5
+                c_is_col2x -= 5
+        if key == arcadeplus.key.RIGHT:
+            if is_name and is_name_x < 1000:
+                is_name_x += 5
+            elif is_title and is_title_x < 1000:
+                is_title_x += 5
+            elif is_date and is_date_x < 1000:
+                is_date_x += 5
+            elif is_col1 and is_col1x <= 595:
+                is_col1x += 5
+                c_is_col1x += 5
+            elif is_col2 and is_col2x <= 995:
+                is_col2x += 5
+                c_is_col2x += 5
 
 
 def on_key_release(key, modifiers):
@@ -683,7 +730,7 @@ def make_trial_balance():
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
-    global first_line_y, total_debits, total_credits, c_tb_col1x, c_tb_col2x
+    global first_line_y, total_debits, total_credits
     copy_values = acct_t_value.copy()
     debit_count = 0
     credit_count = 0
@@ -722,9 +769,9 @@ def make_income_statement():
     else:
         date = f'For the month ended {month} {month_days[month]}, {year}'
     worksheet = 'Income Statement'
-    arcadeplus.draw_text(name, 400, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_text(worksheet, 400, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
-    arcadeplus.draw_text(date, 400, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(name, is_name_x, 660, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(worksheet, is_title_x, 635, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(date, is_date_x, 610, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Revenue', 10, 573, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y = 536
     rev_value_copy = []
@@ -732,34 +779,34 @@ def make_income_statement():
     deb_cred_to_pos_neg(rev_value_copy, revenue_value, revenue_cr_dr, -1, 1)
     deb_cred_to_pos_neg(exp_value_copy, expense_value, expense_cr_dr, 1, -1)
     make_income_statement_2(revenue_name, rev_value_copy)
-    x = 410
-    x_2 = 610
+    # x = 410
+    # x_2 = 610
     if len(revenue_name) >= 2:
         arcadeplus.draw_text('Total Revenue', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
-            x_2 = 600
-            arcadeplus.draw_text(currency+str(total_revenue), x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            # x_2 = 600
+            arcadeplus.draw_text(currency+str(total_revenue), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
-            arcadeplus.draw_text(str(total_revenue)+currency, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            arcadeplus.draw_text(str(total_revenue)+currency, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y -= 50
     arcadeplus.draw_text('Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     first_line_y -= 38
     make_income_statement_2(expense_name, exp_value_copy)
-    x = 410
-    x_2 = 610
+    # x = 410
+    # x_2 = 610
     if len(expense_name) >= 2:
         arcadeplus.draw_text('Total Expenses', 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if currency_pos == 'before':
-            x_2 = 600
-            arcadeplus.draw_text(currency+str(total_expenses), x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            # x_2 = 600
+            arcadeplus.draw_text(currency+str(total_expenses), c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         else:
-            arcadeplus.draw_text(str(total_expenses)+currency, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            arcadeplus.draw_text(str(total_expenses)+currency, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
     arcadeplus.draw_text('Net Income', 10, first_line_y-50, arcadeplus.color.BLACK, 16, font_name='calibri')
     if currency_pos == 'before':
         net_income = currency + str(total_revenue - total_expenses)
     else:
         net_income = str(total_revenue - total_expenses) + currency
-    arcadeplus.draw_text(net_income, x_2, first_line_y-50, arcadeplus.color.BLACK, 16, font_name='calibri')
+    arcadeplus.draw_text(net_income, c_is_col2x, first_line_y-50, arcadeplus.color.BLACK, 16, font_name='calibri')
     if scroll_down and _bottom > first_line_y-50:
         _top -= 10
         _bottom -= 10
@@ -810,31 +857,31 @@ def make_income_statement():
     elif is_date:
         arcadeplus.draw_rectangle_outline(500, 620, 900, 20, arcadeplus.color.BLACK)
     elif is_col1:
-        arcadeplus.draw_lrtb_rectangle_filled(396, 595, 593, first_line_y-35, arcadeplus.color.BLACK)
+        arcadeplus.draw_lrtb_rectangle_outline(396, 595, 593, first_line_y-35, arcadeplus.color.BLACK)
     elif is_col2:
-        arcadeplus.draw_lrtb_rectangle_filled(596, 995, 593, first_line_y-35, arcadeplus.color.BLACK)
+        arcadeplus.draw_lrtb_rectangle_outline(596, 995, 593, first_line_y-35, arcadeplus.color.BLACK)
 
 
 def make_income_statement_2(acct_t_name, copy_list):
     global first_line_y
-    x = 410
-    x_2 = 610
+    # x = 410
+    # x_2 = 610
     for n in range(len(acct_t_name)):
         arcadeplus.draw_text(acct_t_name[n], 10, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         if n == 0:
             if currency_pos == 'before':
                 text = currency + str(copy_list[n])
-                x = 400
-                x_2 = 600
+                # x = 400
+                # x_2 = 600
             else:
                 text = str(copy_list[n]) + currency
             if len(acct_t_name) == 1:
-                arcadeplus.draw_text(text, x_2, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+                arcadeplus.draw_text(text, c_is_col2x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
             else:
-                arcadeplus.draw_text(text, x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
-                x = 410
+                arcadeplus.draw_text(text, c_is_col1x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+                # x = 410
         else:
-            arcadeplus.draw_text(str(copy_list[n]), x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
+            arcadeplus.draw_text(str(copy_list[n]), is_col1x, first_line_y, arcadeplus.color.BLACK, 16, font_name='calibri')
         first_line_y -= 25
 
 
@@ -848,7 +895,7 @@ def deb_cred_to_pos_neg(copy_list, acct_t_value, \
 
 
 def entry():
-    global asset_name, asset_value, asset_cr_dr, liability_name, liability_value
+    global asset_name, asset_value, asset_cr_dr, liability_name, liability_value, c_is_col2x, c_is_col1x
     global liability_cr_dr, revenue_name, revenue_value, revenue_cr_dr, expense_name, expense_value
     global expense_cr_dr, capital_name, capital_value, capital_cr_dr, drawing_name, drawing_value
     global drawing_cr_dr, name, month, day, year, f_period, assets, liabilities, capital, drawings
@@ -989,6 +1036,8 @@ def entry():
                     if currency_pos == 'after':
                         c_tb_col1x = 410
                         c_tb_col2x = 610
+                        c_is_col1x = 410
+                        c_is_col2x = 610
                     break
             else:
                 print('Please enter a valid input')
