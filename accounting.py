@@ -11,6 +11,7 @@ _top = HEIGHT
 scroll_down = False
 scroll_up = False
 save = False
+coa_save_num = 1
 
 home_page = True
 chart_of_accounts = False
@@ -32,9 +33,9 @@ month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31
 month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 'August', 'September', 'October', 'November', 'December']
 
-asset_name = []
-asset_value = []
-asset_cr_dr = []
+asset_name = ['100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100',]
+asset_value = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
+asset_cr_dr = ['dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', ]
 
 a_r_p_name = []
 a_r_p_value = []
@@ -44,9 +45,9 @@ a_r_p_2d = []
 a_r_p_dict = {}
 bank = True
 
-liability_name = []
-liability_value = []
-liability_cr_dr = []
+liability_name = ['test']
+liability_value = [2700]
+liability_cr_dr = ['cr']
 
 capital_name = []
 capital_value = []
@@ -108,7 +109,6 @@ def setup():
     window.on_mouse_release = on_mouse_release
     window.on_mouse_motion = on_mouse_motion
     window.set_viewport = set_viewport
-    window.get_image = get_image
 
     arcadeplus.run()
 
@@ -284,10 +284,6 @@ def set_viewport(left, right, bottom, top):
     _right = right
     _bottom = bottom
     _top = top
-
-
-def get_image():
-    pass
 
 
 def home():
@@ -612,7 +608,7 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 
 
 def make_chart_of_accounts():
-    global first_line_y, _top, _bottom
+    global first_line_y, _top, _bottom, save, coa_save_num
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if interval1:
         starting_num = 1
@@ -632,9 +628,18 @@ def make_chart_of_accounts():
         _top += 10
         _bottom += 10
     arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
+    # if first_line_y <= 0:
+    #     bottom = first_line_y
+    #     top = abs(first_line_y) + HEIGHT
+    # else:
+    #     bottom = 0
+    #     top = HEIGHT
+    # print(bottom, top)
     if save:
-        image = arcadeplus.get_image(0, HEIGHT, WIDTH, first_line_y-50)
-        image.save('chart_of_accounts.png', 'PNG')
+        image = arcadeplus.get_image(0, _bottom)
+        image.save(f'chart_of_accounts{coa_save_num}.png', 'PNG')
+        coa_save_num += 1
+        # arcadeplus.draw_rectangle_filled(500, 345, 1000, 690, arcadeplus.color.WHITE)
 
 
 def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
