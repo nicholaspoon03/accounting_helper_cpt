@@ -35,9 +35,9 @@ month_days = {'January': 31, 'February': 28, 'March': 31, 'April': 30, 'May': 31
 month_list = ['January', 'February', 'March', 'April', 'May', 'June', 'July',
 'August', 'September', 'October', 'November', 'December']
 
-asset_name = ['100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100', '100',]
-asset_value = [100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100]
-asset_cr_dr = ['dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', 'dr', ]
+asset_name = []
+asset_value = []
+asset_cr_dr = []
 
 a_r_p_name = []
 a_r_p_value = []
@@ -47,9 +47,9 @@ a_r_p_2d = []
 a_r_p_dict = {}
 bank = True
 
-liability_name = ['test']
-liability_value = [2700]
-liability_cr_dr = ['cr']
+liability_name = []
+liability_value = []
+liability_cr_dr = []
 
 capital_name = []
 capital_value = []
@@ -723,6 +723,16 @@ def make_trial_balance():
         tb_date = False
         tb_col1 = False
         tb_col2 = False
+    if save:
+        tb_name = False
+        tb_title = False
+        tb_date = False
+        tb_col1 = False
+        tb_col2 = False
+        image = arcadeplus.get_image(0, _bottom)
+        image.save(f'trial_balance{tb_save_num}.png', 'PNG')
+        tb_save_num += 1
+        arcadeplus.draw_rectangle_filled(500, 345, WIDTH, HEIGHT, arcadeplus.color.WHITE)
     if tb_name:
         arcadeplus.draw_rectangle_outline(500, 670, 900, 20, arcadeplus.color.BLACK)
     elif tb_title:
@@ -735,16 +745,6 @@ def make_trial_balance():
         arcadeplus.draw_lrtb_rectangle_outline(596, 995, 593, first_line_y-35, arcadeplus.color.BLACK)
     if tb_name or tb_title or tb_date or tb_col1 or tb_col2:
         arcadeplus.draw_line(500, 690, 500, 0, arcadeplus.color.BLACK)
-    if save:
-        tb_name = False
-        tb_title = False
-        tb_date = False
-        tb_col1 = False
-        tb_col2 = False
-        image = arcadeplus.get_image(0, _bottom)
-        image.save(f'trial_balance{tb_save_num}.png', 'PNG')
-        tb_save_num += 1
-        arcadeplus.draw_rectangle_filled(500, 345, WIDTH, HEIGHT, arcadeplus.color.WHITE)
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
@@ -873,6 +873,16 @@ def make_income_statement():
         is_title = False
         is_name = False
         is_date = False
+    if save:
+        is_col2 = False
+        is_col1 = False
+        is_title = False
+        is_name = False
+        is_date = False
+        image = arcadeplus.get_image(0, _bottom)
+        image.save(f'income_statement{is_save_num}.png', 'PNG')
+        is_save_num += 1
+        arcadeplus.draw_rectangle_filled(500, 345, WIDTH, HEIGHT, arcadeplus.color.WHITE)
     if is_name:
         arcadeplus.draw_rectangle_outline(500, 670, 900, 20, arcadeplus.color.BLACK)
     elif is_title:
@@ -885,16 +895,6 @@ def make_income_statement():
         arcadeplus.draw_lrtb_rectangle_outline(596, 995, 593, first_line_y-60, arcadeplus.color.BLACK)
     if is_name or is_date or is_title or is_col1 or is_col2:
         arcadeplus.draw_line(500, 690, 500, 0, arcadeplus.color.BLACK)
-    if save:
-        is_col2 = False
-        is_col1 = False
-        is_title = False
-        is_name = False
-        is_date = False
-        image = arcadeplus.get_image(0, _bottom)
-        image.save(f'income_statement{is_save_num}.png', 'PNG')
-        is_save_num += 1
-        arcadeplus.draw_rectangle_filled(500, 345, WIDTH, HEIGHT, arcadeplus.color.WHITE)
 
 
 def make_income_statement_2(acct_t_name, copy_list):
