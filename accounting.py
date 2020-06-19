@@ -630,13 +630,6 @@ def make_chart_of_accounts():
         _top += 10
         _bottom += 10
     arcadeplus.set_viewport(0, WIDTH, _bottom, _top)
-    # if first_line_y <= 0:
-    #     bottom = first_line_y
-    #     top = abs(first_line_y) + HEIGHT
-    # else:
-    #     bottom = 0
-    #     top = HEIGHT
-    # print(bottom, top)
     if save:
         image = arcadeplus.get_image(0, _bottom)
         image.save(f'chart_of_accounts{coa_save_num}.png', 'PNG')
