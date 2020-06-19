@@ -12,6 +12,8 @@ scroll_down = False
 scroll_up = False
 save = False
 coa_save_num = 1
+tb_save_num = 1
+is_save_num = 1
 
 home_page = True
 chart_of_accounts = False
@@ -608,7 +610,7 @@ def liquidity_ar_ap(acct_t_name, acct_t_value, acct_t_dc, text, text2):
 
 
 def make_chart_of_accounts():
-    global first_line_y, _top, _bottom, save, coa_save_num
+    global first_line_y, _top, _bottom, coa_save_num
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if interval1:
         starting_num = 1
@@ -639,7 +641,7 @@ def make_chart_of_accounts():
         image = arcadeplus.get_image(0, _bottom)
         image.save(f'chart_of_accounts{coa_save_num}.png', 'PNG')
         coa_save_num += 1
-        # arcadeplus.draw_rectangle_filled(500, 345, 1000, 690, arcadeplus.color.WHITE)
+        arcadeplus.draw_rectangle_filled(500, 345, 1000, 690, arcadeplus.color.WHITE)
 
 
 def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
@@ -655,7 +657,7 @@ def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
 
 
 def make_trial_balance():
-    global total_credits, total_debits, _bottom, _top, first_line_y
+    global total_credits, total_debits, _bottom, _top, first_line_y, tb_save_num
     global tb_name, tb_title, tb_date, tb_col1, tb_col2
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     date = f'{month} {day}, {year}'
@@ -733,6 +735,16 @@ def make_trial_balance():
         arcadeplus.draw_lrtb_rectangle_outline(596, 995, 593, first_line_y-35, arcadeplus.color.BLACK)
     if tb_name or tb_title or tb_date or tb_col1 or tb_col2:
         arcadeplus.draw_line(500, 690, 500, 0, arcadeplus.color.BLACK)
+    if save:
+        tb_name = False
+        tb_title = False
+        tb_date = False
+        tb_col1 = False
+        tb_col2 = False
+        image = arcadeplus.get_image(0, _bottom)
+        image.save(f'trial_balance{tb_save_num}.png', 'PNG')
+        tb_save_num += 1
+        arcadeplus.draw_rectangle_filled(500, 345, WIDTH, HEIGHT, arcadeplus.color.WHITE)
 
 
 def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
@@ -768,7 +780,7 @@ def make_trial_balance_2(acct_t_name, acct_t_value, acct_t_cr_dr):
 
 
 def make_income_statement():
-    global _bottom, _top, first_line_y, is_name, is_title, is_date, is_col1, is_col2
+    global _bottom, _top, first_line_y, is_name, is_title, is_date, is_col1, is_col2, is_save_num
     arcadeplus.set_background_color(arcadeplus.color.WHITE)
     if f_period == 'year':
         date = f'For the year ended {year}'
@@ -873,6 +885,16 @@ def make_income_statement():
         arcadeplus.draw_lrtb_rectangle_outline(596, 995, 593, first_line_y-60, arcadeplus.color.BLACK)
     if is_name or is_date or is_title or is_col1 or is_col2:
         arcadeplus.draw_line(500, 690, 500, 0, arcadeplus.color.BLACK)
+    if save:
+        is_col2 = False
+        is_col1 = False
+        is_title = False
+        is_name = False
+        is_date = False
+        image = arcadeplus.get_image(0, _bottom)
+        image.save(f'income_statement{is_save_num}.png', 'PNG')
+        is_save_num += 1
+        arcadeplus.draw_rectangle_filled(500, 345, WIDTH, HEIGHT, arcadeplus.color.WHITE)
 
 
 def make_income_statement_2(acct_t_name, copy_list):
