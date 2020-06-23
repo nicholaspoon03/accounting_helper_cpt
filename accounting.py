@@ -638,7 +638,7 @@ def make_chart_of_accounts():
 
 
 def make_chart_of_accounts_2(acct_t_name, series_num, starting_num):
-    global first_line_y
+    global first_line_y, acct_num
     if acct_t_name != drawing_name:
         acct_num = 1
     for n in range(len(acct_t_name)):
